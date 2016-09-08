@@ -1,7 +1,8 @@
 #include "audio.h"
 
-Audio::Audio() {
-  Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+Audio::Audio(const Audio::Config config) : config_(config) {
+  Mix_OpenAudio(config_.frequency, config_.format, config_.channels,
+      config_.chunksize);
 }
 
 Audio::~Audio() {
@@ -26,7 +27,7 @@ void Audio::play_sample(const std::string& name) {
 
 void Audio::play_music(const std::string& name) {
   Mix_Music* music = load_music(name);
-  Mix_FadeInMusic(music, 1, FADE_TIME);
+  Mix_FadeInMusic(music, 1, config_.fade_time);
 }
 
 Mix_Chunk* Audio::load_chunk(const std::string& file) {

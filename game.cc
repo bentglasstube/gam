@@ -4,13 +4,18 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "audio.h"
-#include "graphics.h"
 #include "input.h"
 
-Game::Game(int width, int height) : w_(width), h_(height) {
-  srand(static_cast<unsigned int>(time(NULL)));
-  SDL_Init(SDL_INIT_EVERYTHING);
+Game::Game(const std::string title, int width, int height) {
+  config_.graphics.title = title;
+  config_.graphics.width = width;
+  config_.graphics.height = height;
+
+  init();
+}
+
+Game::Game(const Game::Config config) : config_(config) {
+  init();
 }
 
 Game::~Game() {
@@ -18,8 +23,8 @@ Game::~Game() {
 }
 
 void Game::loop(Screen* initial_screen) {
-  Graphics graphics(w_, h_);
-  Audio audio;
+  Graphics graphics(config_.graphics);
+  Audio audio(config_.audio);
   Input input;
 
   unsigned int last_update = SDL_GetTicks();
@@ -50,4 +55,9 @@ void Game::loop(Screen* initial_screen) {
 
     last_update = update;
   }
+}
+
+void Game::init() {
+  srand(static_cast<unsigned int>(time(NULL)));
+  SDL_Init(SDL_INIT_EVERYTHING);
 }

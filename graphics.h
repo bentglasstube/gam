@@ -7,9 +7,16 @@
 class Graphics {
   public:
 
+    struct Config {
+      Config() : fullscreen(true), opengl(true) {}
+      bool fullscreen, opengl;
+      std::string title;
+      int width, height;
+    };
+
     enum class FlipDirection { NONE, HORIZONTAL, VERTICAL, BOTH };
 
-    Graphics(int width, int height);
+    Graphics(const Config config);
     ~Graphics();
 
     void blit(const std::string& file, const SDL_Rect* srect, const SDL_Rect* drect);
@@ -22,14 +29,14 @@ class Graphics {
     void draw_rect(const SDL_Rect* rect, int color, bool filled);
     void draw_circle(int x, int y, int r, int color, bool filled);
 
-    int width() const { return width_; }
-    int height() const { return height_; }
+    int width() const { return config_.width; }
+    int height() const { return config_.height; }
 
     SDL_Texture* load_image(const std::string& file);
 
   private:
 
-    int width_, height_;
+    Config config_;
     typedef std::map<std::string, SDL_Texture*> TextureMap;
     TextureMap textures_;
     SDL_Window* window_;

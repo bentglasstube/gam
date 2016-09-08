@@ -2,18 +2,28 @@
 
 #include <memory>
 
+#include "audio.h"
+#include "graphics.h"
 #include "screen.h"
 
 class Game {
   public:
 
-    Game(int width, int height);
+    struct Config {
+      Graphics::Config graphics;
+      Audio::Config audio;
+    };
+
+    Game(const std::string title, int width, int height);
+    Game(const Config config);
     ~Game();
 
     void loop(Screen* initial_screen);
 
   private:
 
-    int w_, h_;
+    void init();
+
+    Config config_;
     std::shared_ptr<Screen> screen_;
 };

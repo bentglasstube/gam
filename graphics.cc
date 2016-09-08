@@ -2,14 +2,19 @@
 
 #include "math.h"
 
-Graphics::Graphics(int width, int height) : width_(width), height_(height) {
-  int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_FULLSCREEN_DESKTOP;
+Graphics::Graphics(const Config config) : config_(config) {
+  int flags = SDL_WINDOW_RESIZABLE;
 
-  window_ = SDL_CreateWindow("Catapults", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width_, height_, flags);
+  if (config_.fullscreen) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+  if (config_.opengl) flags |= SDL_WINDOW_OPENGL;
+
+  window_ = SDL_CreateWindow(
+      config_.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+      config_.width, config_.height, flags);
   renderer_ = SDL_CreateRenderer(window_, -1, 0);
 
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-  SDL_RenderSetLogicalSize(renderer_, width_, height_);
+  SDL_RenderSetLogicalSize(renderer_, config_.width, config_.height);
   SDL_SetRenderDrawBlendMode(renderer_, SDL_BLENDMODE_BLEND);
 }
 
