@@ -2,7 +2,7 @@
 
 #include "math.h"
 
-Graphics::Graphics(const Config config) : config_(config) {
+Graphics::Graphics(const Config& config) : config_(config) {
   int flags = SDL_WINDOW_RESIZABLE;
 
   if (config_.fullscreen) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;

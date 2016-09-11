@@ -16,7 +16,7 @@ class Graphics {
 
     enum class FlipDirection { NONE, HORIZONTAL, VERTICAL, BOTH };
 
-    Graphics(const Config config);
+    Graphics(const Config& config);
     ~Graphics();
 
     void blit(const std::string& file, const SDL_Rect* srect, const SDL_Rect* drect);

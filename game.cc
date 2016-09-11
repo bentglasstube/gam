@@ -14,7 +14,7 @@ Game::Game(const std::string title, int width, int height) {
   init();
 }
 
-Game::Game(const Game::Config config) : config_(config) {
+Game::Game(const Config& config) : config_(config) {
   init();
 }
 

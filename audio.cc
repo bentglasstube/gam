@@ -1,6 +1,6 @@
 #include "audio.h"
 
-Audio::Audio(const Audio::Config config) : config_(config) {
+Audio::Audio(const Config& config) : config_(config) {
   Mix_OpenAudio(config_.frequency, config_.format, config_.channels,
       config_.chunksize);
 }

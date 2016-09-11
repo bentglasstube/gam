@@ -18,7 +18,7 @@ class Audio {
       int fade_time;
      };
 
-    Audio(const Config config);
+    Audio(const Config& config);
     ~Audio();
 
     void play_sample(const std::string& name);

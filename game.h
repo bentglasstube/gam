@@ -15,7 +15,7 @@ class Game {
     };
 
     Game(const std::string title, int width, int height);
-    Game(const Config config);
+    Game(const Config& config);
     ~Game();
 
     void loop(Screen* initial_screen);
