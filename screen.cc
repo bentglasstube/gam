@@ -1,5 +1,9 @@
 #include "screen.h"
 
+Screen::Screen() : counter_(0) {
+  for (int i = 0; i < FPS_FRAMES; ++i) ticks_[i] = 0;
+}
+
 bool Screen::process_input(Input& input) {
   SDL_Event event;
 
@@ -21,4 +25,15 @@ bool Screen::process_input(Input& input) {
   }
 
   return true;
+}
+
+float Screen::fps() const {
+  unsigned int total = 0;
+  for (int i = 0; i < FPS_FRAMES; ++i) total += ticks_[i];
+  return FPS_FRAMES * 1000.0f / total;
+}
+
+void Screen::count_frame(unsigned int elapsed) {
+  ticks_[counter_] = elapsed;
+  counter_ = (counter_ + 1) % FPS_FRAMES;
 }
