@@ -3,15 +3,20 @@
 #include "math.h"
 
 Graphics::Graphics(const Config& config) : config_(config) {
-  int flags = SDL_WINDOW_RESIZABLE;
+  int window_flags = SDL_WINDOW_RESIZABLE;
+  int renderer_flags = 0;
 
-  if (config_.fullscreen) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-  if (config_.opengl) flags |= SDL_WINDOW_OPENGL;
+  if (config_.fullscreen) window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+  if (config_.vsync) renderer_flags |= SDL_RENDERER_PRESENTVSYNC;
+  if (config_.opengl) {
+    window_flags |= SDL_WINDOW_OPENGL;
+    renderer_flags |= SDL_RENDERER_ACCELERATED;
+  }
 
   window_ = SDL_CreateWindow(
       config_.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-      config_.width, config_.height, flags);
-  renderer_ = SDL_CreateRenderer(window_, -1, 0);
+      config_.width, config_.height, window_flags);
+  renderer_ = SDL_CreateRenderer(window_, -1, renderer_flags);
 
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
   SDL_RenderSetLogicalSize(renderer_, config_.width, config_.height);
