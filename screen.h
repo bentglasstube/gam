@@ -13,7 +13,7 @@ class Screen {
     Screen();
 
     virtual void init() {}
-    virtual bool update(Input& input, Audio& audio, unsigned int elapsed) = 0;
+    virtual bool update(const Input& input, Audio& audio, unsigned int elapsed) = 0;
     virtual void draw(Graphics& graphics) const = 0;
     virtual Screen* next_screen() { return NULL; }
     virtual std::string get_music_track() const { return ""; }
