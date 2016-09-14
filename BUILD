@@ -38,6 +38,16 @@ cc_library(
 )
 
 cc_library(
+    name = "menu",
+    srcs = ["menu.cc"],
+    hdrs = ["menu.h"],
+    deps = [
+        ":graphics",
+        ":text",
+    ],
+)
+
+cc_library(
     name = "particle",
     srcs = ["particle.cc"],
     hdrs = ["particle.h"],
