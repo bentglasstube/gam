@@ -1,6 +1,7 @@
 #include "graphics.h"
 
 #include "math.h"
+#include <SDL2/SDL_image.h>
 
 Graphics::Graphics(const Config& config) : config_(config) {
   int window_flags = SDL_WINDOW_RESIZABLE;
@@ -121,11 +122,13 @@ void Graphics::draw_circle(int x, int y, int r, int color, bool filled) {
 }
 
 SDL_Texture* Graphics::load_image(const std::string& file) {
-  const std::string path("content/" + file+ ".bmp");
+  const std::string path("content/" + file);
   if (textures_.count(path) == 0) {
-    SDL_Surface* surface = SDL_LoadBMP(path.c_str());
-    const Uint32 black = SDL_MapRGB(surface->format, 0, 0, 0);
-    SDL_SetColorKey(surface, SDL_TRUE, black);
+    SDL_Surface* surface = IMG_Load(path.c_str());
+
+    if (surface == NULL) {
+      fprintf(stderr, "Unable to load %s: %s\n", file.c_str(), IMG_GetError());
+    }
 
     textures_[path] = SDL_CreateTextureFromSurface(renderer_, surface);
     SDL_FreeSurface(surface);
