@@ -128,6 +128,7 @@ SDL_Texture* Graphics::load_image(const std::string& file) {
     SDL_SetColorKey(surface, SDL_TRUE, black);
 
     textures_[path] = SDL_CreateTextureFromSurface(renderer_, surface);
+    SDL_FreeSurface(surface);
   }
 
   return textures_[path];
