@@ -31,7 +31,7 @@ void Audio::play_music(const std::string& name) {
 }
 
 Mix_Chunk* Audio::load_chunk(const std::string& file) {
-  const std::string path("content/" + file + ".wav");
+  const std::string path("content/" + file);
   if (chunks_.count(path) == 0) {
     Mix_Chunk* chunk = Mix_LoadWAV(path.c_str());
     chunks_[path] = chunk;
@@ -41,7 +41,7 @@ Mix_Chunk* Audio::load_chunk(const std::string& file) {
 }
 
 Mix_Music* Audio::load_music(const std::string& file) {
-  const std::string path("content/" + file + ".ogg");
+  const std::string path("content/" + file);
   if (musics_.count(path) == 0) {
     Mix_Music* music = Mix_LoadMUS(path.c_str());
     musics_[path] = music;
