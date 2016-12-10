@@ -14,6 +14,13 @@ cc_library(
 )
 
 cc_library(
+    name = "font",
+    srcs = ["font.cc"],
+    hdrs = ["font.h"],
+    deps = [":graphics"],
+)
+
+cc_library(
     name = "game",
     srcs = ["game.cc"],
     hdrs = ["game.h"],

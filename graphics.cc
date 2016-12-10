@@ -137,6 +137,13 @@ SDL_Texture* Graphics::load_image(const std::string& file) {
   return textures_[path];
 }
 
+void Graphics::draw_surface(SDL_Surface* surface, int x, int y) {
+  SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer_, surface);
+  SDL_Rect rect = {x, y, surface->w, surface->h};
+  SDL_RenderCopy(renderer_, texture, NULL, &rect);
+  SDL_DestroyTexture(texture);
+}
+
 void Graphics::set_color(int color) {
   const int r = (color & 0xff000000) >> 24;
   const int g = (color & 0x00ff0000) >> 16;
