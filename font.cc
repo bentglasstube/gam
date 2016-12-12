@@ -23,6 +23,8 @@ void Font::draw(Graphics& graphics, const std::string& text, int x, int y, int c
   c.b = (color & 0x0000ff00) >> 8;
   c.a = (color & 0x000000ff);
 
-  SDL_Surface* surface = TTF_RenderText_Solid(font_, text.c_str(), c);
-  graphics.draw_surface(surface, x, y);
+  if (text.length() > 0) {
+    SDL_Surface* surface = TTF_RenderText_Blended_Wrapped(font_, text.c_str(), c, graphics.width() - x);
+    graphics.draw_surface(surface, x, y);
+  }
 }
