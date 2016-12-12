@@ -11,7 +11,7 @@ class Font {
     Font(const std::string& file, int size = 12);
     ~Font();
 
-    void draw(Graphics& graphics, const std::string& text, int x, int y, int color);
+    void draw(Graphics& graphics, const std::string& text, int x, int y, int color) const;
 
   private:
 

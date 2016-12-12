@@ -15,7 +15,7 @@ Font::~Font() {
   TTF_CloseFont(font_);
 }
 
-void Font::draw(Graphics& graphics, const std::string& text, int x, int y, int color) {
+void Font::draw(Graphics& graphics, const std::string& text, int x, int y, int color) const {
   SDL_Color c;
 
   c.r = (color & 0xff000000) >> 24;
