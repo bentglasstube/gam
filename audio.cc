@@ -34,6 +34,11 @@ Mix_Chunk* Audio::load_chunk(const std::string& file) {
   const std::string path("content/" + file);
   if (chunks_.count(path) == 0) {
     Mix_Chunk* chunk = Mix_LoadWAV(path.c_str());
+
+    if (chunk == NULL) {
+      fprintf(stderr, "Couldn't load sample %s: %s\n", path.c_str(), Mix_GetError());
+    }
+
     chunks_[path] = chunk;
   }
 
@@ -44,6 +49,11 @@ Mix_Music* Audio::load_music(const std::string& file) {
   const std::string path("content/" + file);
   if (musics_.count(path) == 0) {
     Mix_Music* music = Mix_LoadMUS(path.c_str());
+
+    if (music == NULL) {
+      fprintf(stderr, "Couldn't load music %s: %s\n", path.c_str(), Mix_GetError());
+    }
+
     musics_[path] = music;
   }
 
