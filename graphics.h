@@ -8,8 +8,8 @@ class Graphics {
   public:
 
     struct Config {
-      Config() : fullscreen(true), opengl(true), vsync(true) {}
-      bool fullscreen, opengl, vsync;
+      Config() : fullscreen(true), opengl(true), vsync(true), intscale(true) {}
+      bool fullscreen, opengl, vsync, intscale;
       std::string title;
       int width, height;
     };

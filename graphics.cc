@@ -21,6 +21,7 @@ Graphics::Graphics(const Config& config) : config_(config) {
 
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
   SDL_RenderSetLogicalSize(renderer_, config_.width, config_.height);
+  SDL_RenderSetIntegerScale(renderer_, config_.intscale);
   SDL_SetRenderDrawBlendMode(renderer_, SDL_BLENDMODE_BLEND);
 }
 
