@@ -1,19 +1,26 @@
 SOURCES=$(wildcard *.cc)
 OBJECTS=$(patsubst %.cc,%.o,$(SOURCES))
-LIBRARY=libgam.a
+LIBRARY=libgam
+SNAME=$(LIBRARY).a
+DNAME=$(LIBRARY).so
 
 CC=g++
-CFLAGS=-O3 --std=c++11 -Wall -Wextra -Werror -pedantic
+CFLAGS=-O3 --std=c++11 -Wall -Wextra -Werror -pedantic -fPIC
 
-all: $(LIBRARY)
+all: $(SNAME) $(DNAME)
 
-$(LIBRARY): $(OBJECTS)
-	ar rcs $@ $^
+$(SNAME): $(OBJECTS)
+	$(AR) $(ARFLAGS) $@ $^
+
+$(DNAME): LDFLAGS += -shared
+$(DNAME): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(LDLIBS) -o $@ $^
+
 
 %.o: %.cc
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 clean:
-	rm -rf *.o $(LIBRARY)
+	$(RM) $(OBJECTS) $(SNAME) $(DNAME)
 
 .PHONY: all clean
