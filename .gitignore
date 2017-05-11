@@ -2,3 +2,4 @@ bazel-*
 *.o
 libgam.a
 libgam.so
+libgam-v*
