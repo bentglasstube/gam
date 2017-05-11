@@ -31,6 +31,7 @@ $(DNAME): $(OBJECTS)
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 clean:
-	$(RM) $(OBJECTS) $(SNAME) $(DNAME)
+	$(RM) $(OBJECTS) $(SNAME) $(DNAME) $(LIBRARY)-v*.tgz
+	$(RM) -rf $(LIBRARY)-v*/
 
 .PHONY: all clean
