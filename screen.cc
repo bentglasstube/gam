@@ -19,6 +19,15 @@ bool Screen::process_input(Input& input) {
         input.key_up(event);
         break;
 
+      case SDL_TEXTINPUT:
+        input.text_input(event.text.text);
+        input.end_editting();
+        break;
+
+      case SDL_TEXTEDITING:
+        input.text_input(event.edit.text);
+        break;
+
       case SDL_QUIT:
         return false;
     }
