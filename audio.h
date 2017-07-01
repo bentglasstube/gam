@@ -21,6 +21,7 @@ class Audio {
     Audio(const Config& config);
     ~Audio();
 
+    void stop_samples();
     void play_sample(const std::string& name);
     void sfx_volume(int volume) { Mix_Volume(-1, MIX_MAX_VOLUME * volume / 10); }
 

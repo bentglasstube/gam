@@ -20,6 +20,10 @@ Audio::~Audio() {
   Mix_CloseAudio();
 }
 
+void Audio::stop_samples() {
+  Mix_HaltChannel(-1);
+}
+
 void Audio::play_sample(const std::string& name) {
   Mix_Chunk* chunk = load_chunk(name);
   Mix_PlayChannel(-1, chunk, 0);
