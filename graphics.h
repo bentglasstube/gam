@@ -34,8 +34,6 @@ class Graphics {
 
     SDL_Texture* load_image(const std::string& file);
 
-    void draw_surface(SDL_Surface* surface, int x, int y);
-
   private:
 
     Config config_;
