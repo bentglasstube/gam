@@ -29,7 +29,7 @@ void Game::loop(Screen* initial_screen) {
 
   unsigned int last_update = SDL_GetTicks();
 
-  screen_.reset(initial_screen);
+  screen_.reset(std::move(initial_screen));
   screen_->init();
 
   while (true) {
@@ -48,7 +48,7 @@ void Game::loop(Screen* initial_screen) {
 
     } else {
 
-      screen_.reset(screen_->next_screen());
+      screen_.reset(std::move(screen_->next_screen()));
       if (!screen_) return;
       screen_->init();
 

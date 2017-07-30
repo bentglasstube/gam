@@ -25,5 +25,5 @@ class Game {
     void init();
 
     Config config_;
-    std::shared_ptr<Screen> screen_;
+    std::unique_ptr<Screen> screen_;
 };
