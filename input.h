@@ -8,17 +8,23 @@
 class Input {
   public:
 
+    enum class Button {
+      None,
+      Up, Down, Left, Right,
+      Start, Select, A, B,
+    };
+
     void begin_frame();
     void key_down(const SDL_Event& event);
     void key_up(const SDL_Event& event);
 
-    bool key_pressed(SDL_Scancode key) const { return pressed_.count(key) > 0; }
-    bool key_released(SDL_Scancode key) const { return released_.count(key) > 0; }
-    bool key_held(SDL_Scancode key) const { return held_.count(key) > 0; }
+    bool key_pressed(Button key) const { return pressed_.count(key) > 0; }
+    bool key_released(Button key) const { return released_.count(key) > 0; }
+    bool key_held(Button key) const { return held_.count(key) > 0; }
 
     bool any_pressed() const { return !pressed_.empty(); }
 
-    std::vector<SDL_Scancode> all_pressed() const;
+    std::vector<Button> all_pressed() const;
 
     bool editting() const;
     void begin_editting();
@@ -26,11 +32,18 @@ class Input {
     void text_input(const std::string& text);
     std::string get_string() const;
 
+  protected:
+    Button button_from_scancode(SDL_Scancode key);
+
   private:
 
-    std::unordered_set<SDL_Scancode, std::hash<int>> held_;
-    std::unordered_set<SDL_Scancode, std::hash<int>> pressed_;
-    std::unordered_set<SDL_Scancode, std::hash<int>> released_;
+    class ButtonHash {
+      public:
+        size_t operator()(Button const& b) const;
+    };
+    typedef std::unordered_set<Button, ButtonHash> ButtonSet;
+
+    ButtonSet held_, pressed_, released_;
     bool editting_;
     std::string string_;
 
