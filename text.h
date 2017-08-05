@@ -7,11 +7,11 @@
 class Text {
   public:
 
-    enum class Alignment { LEFT, CENTER, RIGHT };
+    enum class Alignment { Left, Center, Right };
 
     Text(const std::string& file, int width = 8);
 
-    void draw(Graphics& graphics, const std::string& text, int x, int y, Alignment alignment=Alignment::LEFT) const;
+    void draw(Graphics& graphics, const std::string& text, int x, int y, Alignment alignment=Alignment::Left) const;
 
   private:
 

@@ -14,7 +14,7 @@ class Graphics {
       int width, height;
     };
 
-    enum class FlipDirection { NONE, HORIZONTAL, VERTICAL, BOTH };
+    enum class FlipDirection { None, Horizontal, Vertical, Both };
 
     Graphics(const Config& config);
     ~Graphics();
@@ -36,8 +36,9 @@ class Graphics {
 
   private:
 
-    Config config_;
     typedef std::map<std::string, SDL_Texture*> TextureMap;
+
+    Config config_;
     TextureMap textures_;
     SDL_Window* window_;
     SDL_Renderer* renderer_;

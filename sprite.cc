@@ -16,5 +16,5 @@ void Sprite::draw_ex(Graphics& graphics, int x, int y, bool flip, float angle, i
   SDL_Rect dest = { x, y, rect_.w, rect_.h };
   SDL_Point center = { cx, cy };
 
-  graphics.blit_ex(file_, &rect_, &dest, angle, &center, flip ? Graphics::FlipDirection::HORIZONTAL : Graphics::FlipDirection::NONE);
+  graphics.blit_ex(file_, &rect_, &dest, angle, &center, flip ? Graphics::FlipDirection::Horizontal : Graphics::FlipDirection::None);
 }

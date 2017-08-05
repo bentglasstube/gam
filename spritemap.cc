@@ -21,5 +21,5 @@ void SpriteMap::draw_ex(Graphics& graphics, int n, int x, int y, bool flip, floa
   source.x = width_ * (n % cols_);
   source.y = height_ * (n / cols_);
 
-  graphics.blit_ex(file_, &source, &dest, angle, &center, flip ? Graphics::FlipDirection::HORIZONTAL : Graphics::FlipDirection::NONE);
+  graphics.blit_ex(file_, &source, &dest, angle, &center, flip ? Graphics::FlipDirection::Horizontal : Graphics::FlipDirection::None);
 }
