@@ -32,7 +32,7 @@ void Game::loop(Screen* initial_screen) {
 
   while (true) {
     if (!audio.music_playing()) audio.play_music(screen_->get_music_track());
-    if (!screen_->process_input(input)) return;
+    if (!input.process()) return;
 
     const unsigned int update = SDL_GetTicks();
     const unsigned int frame_ticks = update - last_update;

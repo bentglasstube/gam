@@ -17,9 +17,68 @@ Input::~Input() {
   }
 }
 
-void Input::begin_frame() {
+bool Input::process() {
+  SDL_Event event;
+
   pressed_.clear();
   released_.clear();
+
+  while (SDL_PollEvent(&event)) {
+    switch (event.type) {
+      case SDL_KEYDOWN:
+        if (event.key.repeat == 0) key_down(event);
+        break;
+
+      case SDL_KEYUP:
+        key_up(event);
+        break;
+
+      case SDL_TEXTINPUT:
+        text_input(event.text.text);
+        end_editting();
+        break;
+
+      case SDL_TEXTEDITING:
+        text_input(event.edit.text);
+        break;
+
+      case SDL_JOYBUTTONDOWN:
+        joy_down(event);
+        break;
+
+      case SDL_JOYBUTTONUP:
+        joy_up(event);
+        break;
+
+      case SDL_JOYAXISMOTION:
+        joy_axis(event);
+        break;
+
+      case SDL_JOYHATMOTION:
+        joy_hat(event);
+        break;
+
+      case SDL_QUIT:
+        return false;
+    }
+  }
+
+  return true;
+
+}
+
+std::vector<Input::Button> Input::all_pressed() const {
+  std::vector<Input::Button> all(pressed_.size());
+  std::copy(pressed_.begin(), pressed_.end(), all.begin());
+  return all;
+}
+
+bool Input::editting() const {
+  return editting_;
+}
+
+std::string Input::get_string() const {
+  return string_;
 }
 
 void Input::key_down(const SDL_Event& event) {
@@ -91,16 +150,6 @@ void Input::joy_hat(const SDL_Event& event) {
   hat_prev_y_ = y;
 }
 
-std::vector<Input::Button> Input::all_pressed() const {
-  std::vector<Input::Button> all(pressed_.size());
-  std::copy(pressed_.begin(), pressed_.end(), all.begin());
-  return all;
-}
-
-bool Input::editting() const {
-  return editting_;
-}
-
 void Input::begin_editting() {
   editting_ = true;
   string_ = "";
@@ -116,69 +165,14 @@ void Input::text_input(const std::string& text) {
   string_ = text;
 }
 
-std::string Input::get_string() const {
-  return string_;
+Input::Button Input::keybind(SDL_Scancode key) const {
+  const auto& i = kDefaultKeyBinds.find(key);
+  return i == kDefaultKeyBinds.end() ? Input::Button::None : i->second;
 }
 
-Input::Button Input::keybind(SDL_Scancode key) {
-  switch (key) {
-    case SDL_SCANCODE_W:
-    case SDL_SCANCODE_UP:
-      return Input::Button::Up;
-
-    case SDL_SCANCODE_A:
-    case SDL_SCANCODE_LEFT:
-      return Input::Button::Left;
-
-    case SDL_SCANCODE_S:
-    case SDL_SCANCODE_DOWN:
-      return Input::Button::Down;
-
-    case SDL_SCANCODE_D:
-    case SDL_SCANCODE_RIGHT:
-      return Input::Button::Right;
-
-    case SDL_SCANCODE_J:
-    case SDL_SCANCODE_Z:
-    case SDL_SCANCODE_SPACE:
-      return Input::Button::A;
-
-    case SDL_SCANCODE_K:
-    case SDL_SCANCODE_X:
-      return Input::Button::B;
-
-    case SDL_SCANCODE_TAB:
-      return Input::Button::Select;
-
-    case SDL_SCANCODE_RETURN:
-      return Input::Button::Start;
-
-    default:
-      return Input::Button::None;
-  }
-}
-
-Input::Button Input::joybind(Uint8 button) {
-  switch (button) {
-    case 0:
-    case 3:
-    case 4:
-      return Input::Button::A;
-
-    case 1:
-    case 2:
-    case 5:
-      return Input::Button::B;
-
-    case 6:
-      return Input::Button::Select;
-
-    case 7:
-      return Input::Button::Start;
-
-    default:
-      return Input::Button::None;
-  }
+Input::Button Input::joybind(Uint8 button) const {
+  const auto& i = kDefaultJoyBinds.find(button);
+  return i == kDefaultJoyBinds.end() ? Input::Button::None : i->second;
 }
 
 size_t Input::ButtonHash::operator()(Button const& b) const {
@@ -219,3 +213,32 @@ void Input::release(Input::Button b) {
     held_.erase(b);
   }
 }
+
+const std::unordered_map<SDL_Scancode, Input::Button> Input::kDefaultKeyBinds = {
+  { SDL_SCANCODE_UP,      Input::Button::Up },
+  { SDL_SCANCODE_W,       Input::Button::Up },
+  { SDL_SCANCODE_A,       Input::Button::Left },
+  { SDL_SCANCODE_LEFT,    Input::Button::Left },
+  { SDL_SCANCODE_S,       Input::Button::Down },
+  { SDL_SCANCODE_DOWN,    Input::Button::Down },
+  { SDL_SCANCODE_D,       Input::Button::Right },
+  { SDL_SCANCODE_RIGHT,   Input::Button::Right },
+  { SDL_SCANCODE_J,       Input::Button::A },
+  { SDL_SCANCODE_Z,       Input::Button::A },
+  { SDL_SCANCODE_SPACE,   Input::Button::A },
+  { SDL_SCANCODE_K,       Input::Button::B },
+  { SDL_SCANCODE_X,       Input::Button::B },
+  { SDL_SCANCODE_TAB,     Input::Button::Select },
+  { SDL_SCANCODE_RETURN,  Input::Button::Start },
+};
+
+const std::unordered_map<Uint8, Input::Button> Input::kDefaultJoyBinds = {
+  { 0, Input::Button::A },
+  { 1, Input::Button::B },
+  { 2, Input::Button::B },
+  { 3, Input::Button::A },
+  { 4, Input::Button::A },
+  { 5, Input::Button::B },
+  { 6, Input::Button::Select },
+  { 6, Input::Button::Start },
+};
