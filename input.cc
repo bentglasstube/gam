@@ -1,9 +1,12 @@
 #include "input.h"
 
-Input::Input() : joystick_(nullptr), hat_prev_x_(0), hat_prev_y_(0) {
-  for (int i = 0; i < SDL_NumJoysticks(); ++i) {
-    joystick_ = SDL_JoystickOpen(i);
-    break;
+Input::Input() : gamepad_(nullptr), hat_prev_x_(0), hat_prev_y_(0) {
+  const int count = SDL_NumJoysticks();
+  for (int i = 0; i < count; ++i) {
+    if (SDL_IsGameController(i)) {
+      gamepad_ = SDL_GameControllerOpen(i);
+      if (gamepad_) break;
+    }
   }
 
   for (int i = 0; i < kMaxAxes; ++i) {
@@ -12,9 +15,7 @@ Input::Input() : joystick_(nullptr), hat_prev_x_(0), hat_prev_y_(0) {
 }
 
 Input::~Input() {
-  if (joystick_) {
-    SDL_JoystickClose(joystick_);
-  }
+  if (gamepad_) SDL_GameControllerClose(gamepad_);
 }
 
 bool Input::process() {
@@ -42,20 +43,16 @@ bool Input::process() {
         text_input(event.edit.text);
         break;
 
-      case SDL_JOYBUTTONDOWN:
-        joy_down(event);
+      case SDL_CONTROLLERBUTTONDOWN:
+        pad_down(event);
         break;
 
-      case SDL_JOYBUTTONUP:
-        joy_up(event);
+      case SDL_CONTROLLERBUTTONUP:
+        pad_up(event);
         break;
 
-      case SDL_JOYAXISMOTION:
-        joy_axis(event);
-        break;
-
-      case SDL_JOYHATMOTION:
-        joy_hat(event);
+      case SDL_CONTROLLERAXISMOTION:
+        pad_axis(event);
         break;
 
       case SDL_QUIT:
@@ -89,24 +86,25 @@ void Input::key_up(const SDL_Event& event) {
   release(keybind(event.key.keysym.scancode));
 }
 
-void Input::joy_up(const SDL_Event& event) {
-  press(joybind(event.jbutton.button));
+void Input::pad_down(const SDL_Event& event) {
+  press(padbind(static_cast<SDL_GameControllerButton>(event.cbutton.button)));
 }
 
-void Input::joy_down(const SDL_Event& event) {
-  release(joybind(event.jbutton.button));
+void Input::pad_up(const SDL_Event& event) {
+  release(padbind(static_cast<SDL_GameControllerButton>(event.cbutton.button)));
 }
 
-void Input::joy_axis(const SDL_Event& event) {
-  if (event.jaxis.axis >= kMaxAxes) return;
+
+void Input::pad_axis(const SDL_Event& event) {
+  if (event.caxis.axis >= kMaxAxes) return;
 
   int dir = 0;
-  if (event.jaxis.value < -kDeadZone) dir = -1;
-  if (event.jaxis.value > kDeadZone) dir = 1;
+  if (event.caxis.value < -kDeadZone) dir = -1;
+  if (event.caxis.value > kDeadZone) dir = 1;
 
   Input::Button neg, pos;
 
-  switch (event.jaxis.axis) {
+  switch (event.caxis.axis) {
     case 0:
     case 2:
       neg = Input::Button::Left;
@@ -124,30 +122,8 @@ void Input::joy_axis(const SDL_Event& event) {
       break;
   }
 
-  process_axis(dir, axis_prev_[event.jaxis.axis], neg, pos);
-  axis_prev_[event.jaxis.axis] = dir;
-}
-
-void Input::joy_hat(const SDL_Event& event) {
-  int x = 0, y = 0;
-
-  switch (event.jhat.value) {
-    case SDL_HAT_LEFTUP:    x = -1; y = -1; break;
-    case SDL_HAT_LEFT:      x = -1; y =  0; break;
-    case SDL_HAT_LEFTDOWN:  x = -1; y =  1; break;
-    case SDL_HAT_UP:        x =  0; y = -1; break;
-    case SDL_HAT_CENTERED:  x =  0; y =  0; break;
-    case SDL_HAT_DOWN:      x =  0; y =  1; break;
-    case SDL_HAT_RIGHTUP:   x =  1; y = -1; break;
-    case SDL_HAT_RIGHT:     x =  1; y =  0; break;
-    case SDL_HAT_RIGHTDOWN: x =  1; y =  1; break;
-  }
-
-  process_axis(x, hat_prev_x_, Input::Button::Left, Input::Button::Right);
-  process_axis(y, hat_prev_y_, Input::Button::Up, Input::Button::Down);
-
-  hat_prev_x_ = x;
-  hat_prev_y_ = y;
+  process_axis(dir, axis_prev_[event.caxis.axis], neg, pos);
+  axis_prev_[event.caxis.axis] = dir;
 }
 
 void Input::begin_editting() {
@@ -170,9 +146,9 @@ Input::Button Input::keybind(SDL_Scancode key) const {
   return i == kDefaultKeyBinds.end() ? Input::Button::None : i->second;
 }
 
-Input::Button Input::joybind(Uint8 button) const {
-  const auto& i = kDefaultJoyBinds.find(button);
-  return i == kDefaultJoyBinds.end() ? Input::Button::None : i->second;
+Input::Button Input::padbind(SDL_GameControllerButton button) const {
+  const auto& i = kDefaultPadBinds.find(button);
+  return i == kDefaultPadBinds.end() ? Input::Button::None : i->second;
 }
 
 size_t Input::ButtonHash::operator()(Button const& b) const {
@@ -232,13 +208,15 @@ const std::unordered_map<SDL_Scancode, Input::Button> Input::kDefaultKeyBinds = 
   { SDL_SCANCODE_RETURN,  Input::Button::Start },
 };
 
-const std::unordered_map<Uint8, Input::Button> Input::kDefaultJoyBinds = {
-  { 0, Input::Button::A },
-  { 1, Input::Button::B },
-  { 2, Input::Button::B },
-  { 3, Input::Button::A },
-  { 4, Input::Button::A },
-  { 5, Input::Button::B },
-  { 6, Input::Button::Select },
-  { 6, Input::Button::Start },
+const std::unordered_map<SDL_GameControllerButton, Input::Button> Input::kDefaultPadBinds = {
+  { SDL_CONTROLLER_BUTTON_DPAD_UP,    Input::Button::Up },
+  { SDL_CONTROLLER_BUTTON_DPAD_LEFT,  Input::Button::Left },
+  { SDL_CONTROLLER_BUTTON_DPAD_DOWN,  Input::Button::Down },
+  { SDL_CONTROLLER_BUTTON_DPAD_RIGHT, Input::Button::Right },
+  { SDL_CONTROLLER_BUTTON_A,          Input::Button::A },
+  { SDL_CONTROLLER_BUTTON_B,          Input::Button::B },
+  { SDL_CONTROLLER_BUTTON_X,          Input::Button::B },
+  { SDL_CONTROLLER_BUTTON_Y,          Input::Button::A },
+  { SDL_CONTROLLER_BUTTON_BACK,       Input::Button::Select },
+  { SDL_CONTROLLER_BUTTON_START,      Input::Button::Start },
 };

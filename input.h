@@ -34,7 +34,7 @@ class Input {
     static constexpr int kDeadZone = 16000;
 
     static const std::unordered_map<SDL_Scancode, Button> kDefaultKeyBinds;
-    static const std::unordered_map<Uint8, Button> kDefaultJoyBinds;
+    static const std::unordered_map<SDL_GameControllerButton, Button> kDefaultPadBinds;
 
     class ButtonHash {
       public:
@@ -43,20 +43,19 @@ class Input {
     typedef std::unordered_set<Button, ButtonHash> ButtonSet;
 
     ButtonSet held_, pressed_, released_;
-    SDL_Joystick* joystick_;
+    SDL_GameController* gamepad_;
     bool editting_;
     std::string string_;
     int axis_prev_[kMaxAxes], hat_prev_x_, hat_prev_y_;
 
     Button keybind(SDL_Scancode key) const;
-    Button joybind(Uint8 button) const;
+    Button padbind(SDL_GameControllerButton button) const;
 
     void key_down(const SDL_Event& event);
     void key_up(const SDL_Event& event);
-    void joy_down(const SDL_Event& event);
-    void joy_up(const SDL_Event& event);
-    void joy_axis(const SDL_Event& event);
-    void joy_hat(const SDL_Event& event);
+    void pad_down(const SDL_Event& event);
+    void pad_up(const SDL_Event& event);
+    void pad_axis(const SDL_Event& event);
 
     void begin_editting();
     void end_editting();
