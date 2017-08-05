@@ -1,8 +1,6 @@
 #include "game.h"
 
 #include <SDL2/SDL.h>
-#include <stdlib.h>
-#include <time.h>
 
 #include "input.h"
 
@@ -60,6 +58,5 @@ void Game::loop(Screen* initial_screen) {
 }
 
 void Game::init() {
-  srand(static_cast<unsigned int>(time(NULL)));
   SDL_Init(SDL_INIT_EVERYTHING);
 }
