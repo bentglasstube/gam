@@ -172,7 +172,7 @@ void Input::process_axis(int cur, int prev, Button neg, Button pos) {
 
     case 0:
       if (prev == -1) release(neg);
-      if (prev == 0) release(pos);
+      if (prev == 1) release(pos);
       break;
 
     case 1:
