@@ -33,8 +33,8 @@ class Input {
     static constexpr int kMaxAxes = 64;
     static constexpr int kDeadZone = 16000;
 
-    static const std::unordered_map<SDL_Scancode, Button> kDefaultKeyBinds;
-    static const std::unordered_map<SDL_GameControllerButton, Button> kDefaultPadBinds;
+    static const std::unordered_map<int, Button> kDefaultKeyBinds;
+    static const std::unordered_map<int, Button> kDefaultPadBinds;
 
     class ButtonHash {
       public:

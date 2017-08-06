@@ -196,7 +196,7 @@ void Input::release(Input::Button b) {
   }
 }
 
-const std::unordered_map<SDL_Scancode, Input::Button> Input::kDefaultKeyBinds = {
+const std::unordered_map<int, Input::Button> Input::kDefaultKeyBinds = {
   { SDL_SCANCODE_UP,      Input::Button::Up },
   { SDL_SCANCODE_W,       Input::Button::Up },
   { SDL_SCANCODE_A,       Input::Button::Left },
@@ -214,7 +214,7 @@ const std::unordered_map<SDL_Scancode, Input::Button> Input::kDefaultKeyBinds = 
   { SDL_SCANCODE_RETURN,  Input::Button::Start },
 };
 
-const std::unordered_map<SDL_GameControllerButton, Input::Button> Input::kDefaultPadBinds = {
+const std::unordered_map<int, Input::Button> Input::kDefaultPadBinds = {
   { SDL_CONTROLLER_BUTTON_DPAD_UP,    Input::Button::Up },
   { SDL_CONTROLLER_BUTTON_DPAD_LEFT,  Input::Button::Left },
   { SDL_CONTROLLER_BUTTON_DPAD_DOWN,  Input::Button::Down },
