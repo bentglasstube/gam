@@ -1,11 +1,17 @@
 #include "input.h"
 
 Input::Input() : gamepad_(nullptr), hat_prev_x_(0), hat_prev_y_(0) {
+
+  SDL_GameControllerAddMapping("03000000571d00002100000010010000,Tomee NES Adapter,a:b0,b:b1,back:b2,start:b3,leftx:a0,lefty:a1");
+
   const int count = SDL_NumJoysticks();
   for (int i = 0; i < count; ++i) {
     if (SDL_IsGameController(i)) {
       gamepad_ = SDL_GameControllerOpen(i);
-      if (gamepad_) break;
+      if (gamepad_) {
+        fprintf(stderr, "Found controller %s\n", SDL_JoystickNameForIndex(i));
+        break;
+      }
     }
   }
 
