@@ -59,4 +59,5 @@ void Game::loop(Screen* initial_screen) {
 
 void Game::init() {
   SDL_Init(SDL_INIT_EVERYTHING);
+  SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
 }
