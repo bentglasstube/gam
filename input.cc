@@ -1,6 +1,6 @@
 #include "input.h"
 
-Input::Input() : gamepad_(nullptr), hat_prev_x_(0), hat_prev_y_(0) {
+Input::Input() : gamepad_(nullptr) {
 
   SDL_GameControllerAddMapping("03000000571d00002100000010010000,Tomee NES Adapter,a:b0,b:b1,back:b2,start:b3,leftx:a0,lefty:a1");
 

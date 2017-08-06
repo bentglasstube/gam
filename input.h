@@ -46,7 +46,7 @@ class Input {
     SDL_GameController* gamepad_;
     bool editting_;
     std::string string_;
-    int axis_prev_[kMaxAxes], hat_prev_x_, hat_prev_y_;
+    int axis_prev_[kMaxAxes];
 
     Button keybind(SDL_Scancode key) const;
     Button padbind(SDL_GameControllerButton button) const;
