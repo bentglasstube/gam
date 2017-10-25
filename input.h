@@ -25,7 +25,7 @@ class Input {
     bool key_held(Button key) const { return held_.count(key) > 0; }
     bool any_pressed() const { return !pressed_.empty(); }
     std::vector<Button> all_pressed() const;
-    bool editting() const;
+    bool editing() const;
     std::string get_string() const;
 
   private:
@@ -44,7 +44,7 @@ class Input {
 
     ButtonSet held_, pressed_, released_;
     SDL_GameController* gamepad_;
-    bool editting_;
+    bool editing_;
     std::string string_;
     int axis_prev_[kMaxAxes];
 
@@ -57,8 +57,8 @@ class Input {
     void pad_up(const SDL_Event& event);
     void pad_axis(const SDL_Event& event);
 
-    void begin_editting();
-    void end_editting();
+    void begin_editing();
+    void end_editing();
     void text_input(const std::string& text);
 
     void process_axis(int cur, int prev, Button neg, Button pos);

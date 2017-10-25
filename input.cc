@@ -42,7 +42,7 @@ bool Input::process() {
 
       case SDL_TEXTINPUT:
         text_input(event.text.text);
-        end_editting();
+        end_editing();
         break;
 
       case SDL_TEXTEDITING:
@@ -76,8 +76,8 @@ std::vector<Input::Button> Input::all_pressed() const {
   return all;
 }
 
-bool Input::editting() const {
-  return editting_;
+bool Input::editing() const {
+  return editing_;
 }
 
 std::string Input::get_string() const {
@@ -132,14 +132,14 @@ void Input::pad_axis(const SDL_Event& event) {
   axis_prev_[event.caxis.axis] = dir;
 }
 
-void Input::begin_editting() {
-  editting_ = true;
+void Input::begin_editing() {
+  editing_ = true;
   string_ = "";
   SDL_StartTextInput();
 }
 
-void Input::end_editting() {
-  editting_ = false;
+void Input::end_editing() {
+  editing_ = false;
   SDL_StopTextInput();
 }
 
