@@ -157,10 +157,6 @@ Input::Button Input::padbind(SDL_GameControllerButton button) const {
   return i == kDefaultPadBinds.end() ? Input::Button::None : i->second;
 }
 
-size_t Input::ButtonHash::operator()(Button const& b) const {
-  return static_cast<size_t>(b);
-}
-
 void Input::process_axis(int cur, int prev, Button neg, Button pos) {
   if (cur == prev) return;
 

@@ -6,6 +6,8 @@
 #include <vector>
 #include <SDL2/SDL.h>
 
+#include "util.h"
+
 class Input {
   public:
 
@@ -36,11 +38,7 @@ class Input {
     static const std::unordered_map<int, Button> kDefaultKeyBinds;
     static const std::unordered_map<int, Button> kDefaultPadBinds;
 
-    class ButtonHash {
-      public:
-        size_t operator()(Button const& b) const;
-    };
-    typedef std::unordered_set<Button, ButtonHash> ButtonSet;
+    typedef std::unordered_set<Button, Util::CastHash<Button>> ButtonSet;
 
     ButtonSet held_, pressed_, released_;
     SDL_GameController* gamepad_;

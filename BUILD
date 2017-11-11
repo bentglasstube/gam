@@ -35,6 +35,7 @@ cc_library(
     name = "input",
     srcs = ["input.cc"],
     hdrs = ["input.h"],
+    deps = [":util"],
 )
 
 cc_library(
