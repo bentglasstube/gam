@@ -85,3 +85,9 @@ cc_library(
     hdrs = ["text.h"],
     deps = [":graphics"],
 )
+
+cc_library(
+    name = "util",
+    srcs = ["util.cc"],
+    hdrs = ["util.h"],
+)
