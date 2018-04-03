@@ -14,7 +14,8 @@ class Input {
     enum class Button {
       None,
       Up, Down, Left, Right,
-      Start, Select, A, B,
+      Start, Select,
+      A, B, X, Y, L, R
     };
 
     Input();
