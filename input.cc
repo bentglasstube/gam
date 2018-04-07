@@ -4,6 +4,10 @@ Input::Input() : gamepad_(nullptr) {
 
   SDL_GameControllerAddMapping("03000000571d00002100000010010000,Tomee NES Adapter,a:b0,b:b1,back:b2,start:b3,leftx:a0,lefty:a1");
 
+  keybinds_ = kDefaultKeyBinds;
+  padbinds_ = kDefaultPadBinds;
+  axisbinds_ = kDefaultAxisBinds;
+
   const int count = SDL_NumJoysticks();
   for (int i = 0; i < count; ++i) {
     if (SDL_IsGameController(i)) {
@@ -84,6 +88,18 @@ std::string Input::get_string() const {
   return string_;
 }
 
+void Input::bind_key(SDL_Scancode scancode, Input::Button button) {
+  keybinds_[scancode] = button;
+}
+
+void Input::bind_pad(SDL_GameControllerButton pad, Input::Button button) {
+  padbinds_[pad] = button;
+}
+
+void Input::bind_axis(int axis, Input::Button neg, Input::Button pos) {
+  axisbinds_[axis] = std::make_pair(neg, pos);
+}
+
 void Input::key_down(const SDL_Event& event) {
   press(keybind(event.key.keysym.scancode));
 }
@@ -100,7 +116,6 @@ void Input::pad_up(const SDL_Event& event) {
   release(padbind(static_cast<SDL_GameControllerButton>(event.cbutton.button)));
 }
 
-
 void Input::pad_axis(const SDL_Event& event) {
   if (event.caxis.axis >= kMaxAxes) return;
 
@@ -108,27 +123,29 @@ void Input::pad_axis(const SDL_Event& event) {
   if (event.caxis.value < -kDeadZone) dir = -1;
   if (event.caxis.value > kDeadZone) dir = 1;
 
-  Input::Button neg, pos;
+  const auto& i = axisbinds_.find(event.caxis.axis);
+  if (i == axisbinds_.end()) return;
 
-  switch (event.caxis.axis) {
+  const int prev = axis_prev_[event.caxis.axis];
+  if (dir == prev) return;
+
+  switch (dir) {
+    case -1:
+      press(i->second.first);
+      if (prev == 1) release(i->second.second);
+      break;
+
     case 0:
-    case 2:
-      neg = Input::Button::Left;
-      pos = Input::Button::Right;
+      if (prev == -1) release(i->second.first);
+      if (prev == 1) release(i->second.second);
       break;
 
     case 1:
-    case 3:
-      neg = Input::Button::Up;
-      pos = Input::Button::Down;
-      break;
-
-    default:
-      neg = pos = Input::Button::None;
+      if (prev == -1) release(i->second.first);
+      press(i->second.second);
       break;
   }
 
-  process_axis(dir, axis_prev_[event.caxis.axis], neg, pos);
   axis_prev_[event.caxis.axis] = dir;
 }
 
@@ -148,34 +165,13 @@ void Input::text_input(const std::string& text) {
 }
 
 Input::Button Input::keybind(SDL_Scancode key) const {
-  const auto& i = kDefaultKeyBinds.find(key);
-  return i == kDefaultKeyBinds.end() ? Input::Button::None : i->second;
+  const auto& i = keybinds_.find(key);
+  return i == keybinds_.end() ? Input::Button::None : i->second;
 }
 
 Input::Button Input::padbind(SDL_GameControllerButton button) const {
-  const auto& i = kDefaultPadBinds.find(button);
-  return i == kDefaultPadBinds.end() ? Input::Button::None : i->second;
-}
-
-void Input::process_axis(int cur, int prev, Button neg, Button pos) {
-  if (cur == prev) return;
-
-  switch (cur) {
-    case -1:
-      press(neg);
-      if (prev == 1) release(pos);
-      break;
-
-    case 0:
-      if (prev == -1) release(neg);
-      if (prev == 1) release(pos);
-      break;
-
-    case 1:
-      if (prev == -1) release(neg);
-      press(pos);
-      break;
-  }
+  const auto& i = padbinds_.find(button);
+  return i == padbinds_.end() ? Input::Button::None : i->second;
 }
 
 void Input::press(Input::Button b) {
@@ -228,4 +224,11 @@ const std::unordered_map<int, Input::Button> Input::kDefaultPadBinds = {
   { SDL_CONTROLLER_BUTTON_RIGHTSHOULDER, Input::Button::R },
   { SDL_CONTROLLER_BUTTON_BACK,          Input::Button::Select },
   { SDL_CONTROLLER_BUTTON_START,         Input::Button::Start },
+};
+
+const std::unordered_map<int, std::pair<Input::Button, Input::Button>> Input::kDefaultAxisBinds = {
+  { 0, { Input::Button::Left, Input::Button::Right } },
+  { 1, { Input::Button::Up, Input::Button::Down } },
+  { 2, { Input::Button::Left, Input::Button::Right } },
+  { 3, { Input::Button::Up, Input::Button::Down } },
 };

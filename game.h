@@ -4,6 +4,7 @@
 
 #include "audio.h"
 #include "graphics.h"
+#include "input.h"
 #include "screen.h"
 
 class Game {
@@ -20,10 +21,13 @@ class Game {
 
     void loop(Screen* initial_screen);
 
+    Input* input();
+
   private:
 
     void init();
 
     Config config_;
+    Input input_;
     std::unique_ptr<Screen> screen_;
 };

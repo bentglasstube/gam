@@ -15,7 +15,8 @@ class Input {
       None,
       Up, Down, Left, Right,
       Start, Select,
-      A, B, X, Y, L, R
+      A, B, X, Y, L, R,
+      User1, User2, User3, User4
     };
 
     Input();
@@ -28,8 +29,13 @@ class Input {
     bool key_held(Button key) const { return held_.count(key) > 0; }
     bool any_pressed() const { return !pressed_.empty(); }
     std::vector<Button> all_pressed() const;
+
     bool editing() const;
     std::string get_string() const;
+
+    void bind_key(SDL_Scancode scancode, Button button);
+    void bind_pad(SDL_GameControllerButton pad, Button button);
+    void bind_axis(int axis, Button neg, Button pos);
 
   private:
 
@@ -38,6 +44,7 @@ class Input {
 
     static const std::unordered_map<int, Button> kDefaultKeyBinds;
     static const std::unordered_map<int, Button> kDefaultPadBinds;
+    static const std::unordered_map<int, std::pair<Button, Button>> kDefaultAxisBinds;
 
     typedef std::unordered_set<Button, Util::CastHash<Button>> ButtonSet;
 
@@ -46,9 +53,12 @@ class Input {
     bool editing_;
     std::string string_;
     int axis_prev_[kMaxAxes];
+    std::unordered_map<int, Button> keybinds_, padbinds_;
+    std::unordered_map<int, std::pair<Button, Button>> axisbinds_;
 
     Button keybind(SDL_Scancode key) const;
     Button padbind(SDL_GameControllerButton button) const;
+    Button axisbind(int axis) const;
 
     void key_down(const SDL_Event& event);
     void key_up(const SDL_Event& event);
