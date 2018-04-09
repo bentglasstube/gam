@@ -21,7 +21,6 @@ Game::~Game() {
 void Game::loop(Screen* initial_screen) {
   Graphics graphics(config_.graphics);
   Audio audio(config_.audio);
-  input_.reset(new Input());
 
   unsigned int last_update = SDL_GetTicks();
 
@@ -53,6 +52,8 @@ void Game::loop(Screen* initial_screen) {
 
     last_update = update;
   }
+
+  input_.reset();
 }
 
 Input* Game::input() {
@@ -62,4 +63,5 @@ Input* Game::input() {
 void Game::init() {
   SDL_Init(SDL_INIT_EVERYTHING);
   SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
+  input_.reset(new Input());
 }
