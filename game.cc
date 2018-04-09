@@ -56,8 +56,16 @@ void Game::loop(Screen* initial_screen) {
   input_.reset();
 }
 
-Input* Game::input() {
-  return input_.get();
+void Game::bind_key(SDL_Scancode scancode, Input::Button button) {
+  input_->bind_key(scancode, button);
+}
+
+void Game::bind_pad(SDL_GameControllerButton pad, Input::Button button) {
+  input_->bind_pad(pad, button);
+}
+
+void Game::bind_axis(int axis, Input::Button neg, Input::Button pos) {
+  input_->bind_axis(axis, neg, pos);
 }
 
 void Game::init() {

@@ -21,7 +21,9 @@ class Game {
 
     void loop(Screen* initial_screen);
 
-    Input* input();
+    void bind_key(SDL_Scancode scancode, Input::Button button);
+    void bind_pad(SDL_GameControllerButton pad, Input::Button button);
+    void bind_axis(int axis, Input::Button neg, Input::Button pos);
 
   private:
 
