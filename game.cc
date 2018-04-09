@@ -21,6 +21,7 @@ Game::~Game() {
 void Game::loop(Screen* initial_screen) {
   Graphics graphics(config_.graphics);
   Audio audio(config_.audio);
+  input_.reset(new Input());
 
   unsigned int last_update = SDL_GetTicks();
 
@@ -29,13 +30,13 @@ void Game::loop(Screen* initial_screen) {
 
   while (true) {
     if (!audio.music_playing()) audio.play_music(screen_->get_music_track());
-    if (!input_.process()) return;
+    if (!input_->process()) return;
 
     const unsigned int update = SDL_GetTicks();
     const unsigned int frame_ticks = update - last_update;
 
     screen_->count_frame(frame_ticks);
-    if (screen_->update(input_, audio, frame_ticks)) {
+    if (screen_->update(*(input_.get()), audio, frame_ticks)) {
 
       graphics.clear();
       screen_->draw(graphics);
@@ -55,7 +56,7 @@ void Game::loop(Screen* initial_screen) {
 }
 
 Input* Game::input() {
-  return &input_;
+  return input_.get();
 }
 
 void Game::init() {
