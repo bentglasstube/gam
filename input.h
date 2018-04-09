@@ -22,6 +22,7 @@ class Input {
     Input();
     ~Input();
 
+    void init();
     bool process();
 
     bool key_pressed(Button key) const { return pressed_.count(key) > 0; }

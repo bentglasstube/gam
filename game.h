@@ -30,6 +30,6 @@ class Game {
     void init();
 
     Config config_;
-    std::unique_ptr<Input> input_;
+    Input input_;
     std::unique_ptr<Screen> screen_;
 };

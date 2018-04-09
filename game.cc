@@ -29,13 +29,13 @@ void Game::loop(Screen* initial_screen) {
 
   while (true) {
     if (!audio.music_playing()) audio.play_music(screen_->get_music_track());
-    if (!input_->process()) return;
+    if (!input_.process()) return;
 
     const unsigned int update = SDL_GetTicks();
     const unsigned int frame_ticks = update - last_update;
 
     screen_->count_frame(frame_ticks);
-    if (screen_->update(*(input_.get()), audio, frame_ticks)) {
+    if (screen_->update(input_, audio, frame_ticks)) {
 
       graphics.clear();
       screen_->draw(graphics);
@@ -52,24 +52,22 @@ void Game::loop(Screen* initial_screen) {
 
     last_update = update;
   }
-
-  input_.reset();
 }
 
 void Game::bind_key(SDL_Scancode scancode, Input::Button button) {
-  input_->bind_key(scancode, button);
+  input_.bind_key(scancode, button);
 }
 
 void Game::bind_pad(SDL_GameControllerButton pad, Input::Button button) {
-  input_->bind_pad(pad, button);
+  input_.bind_pad(pad, button);
 }
 
 void Game::bind_axis(int axis, Input::Button neg, Input::Button pos) {
-  input_->bind_axis(axis, neg, pos);
+  input_.bind_axis(axis, neg, pos);
 }
 
 void Game::init() {
   SDL_Init(SDL_INIT_EVERYTHING);
   SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
-  input_.reset(new Input());
+  Input_.init();
 }

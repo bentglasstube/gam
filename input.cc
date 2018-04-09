@@ -1,12 +1,10 @@
 #include "input.h"
 
-Input::Input() : gamepad_(nullptr) {
+Input::Input() : gamepad_(nullptr), keybinds_(kDefaultKeyBinds),
+  padbinds_(kDefaultPadBinds), axisbinds_(kDefaultAxisBinds) {}
 
+void Input::init() {
   SDL_GameControllerAddMapping("03000000571d00002100000010010000,Tomee NES Adapter,a:b0,b:b1,back:b2,start:b3,leftx:a0,lefty:a1");
-
-  keybinds_ = kDefaultKeyBinds;
-  padbinds_ = kDefaultPadBinds;
-  axisbinds_ = kDefaultAxisBinds;
 
   const int count = SDL_NumJoysticks();
   for (int i = 0; i < count; ++i) {
