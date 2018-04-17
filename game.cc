@@ -69,5 +69,5 @@ void Game::bind_axis(int axis, Input::Button neg, Input::Button pos) {
 void Game::init() {
   SDL_Init(SDL_INIT_EVERYTHING);
   SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
-  Input_.init();
+  input_.init();
 }
