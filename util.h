@@ -13,6 +13,12 @@ class Util {
         }
     };
 
+    template<class T>
+    static inline constexpr const T& clamp(const T& val, const T& min, const T& max) {
+      return val < min ? min : val > max ? max : val;
+    }
+
   private:
     static size_t sysrandom(void* dst, size_t length);
+
 };
