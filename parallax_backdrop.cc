@@ -8,8 +8,11 @@ void ParallaxBackdrop::draw(Graphics& graphics, double xoffset, double yoffset) 
   SDL_Rect dest = { 0, 0, width_, height_ };
 
   dest.y = -yoffset / scale_;
+  while (dest.y > 0) dest.y -= height_;
+
   while (dest.y < graphics.height()) {
     dest.x = -xoffset / scale_;
+    while (dest.x > 0) dest.x -= width_;
     while (dest.x < graphics.width()) {
       graphics.blit(file_, &src, &dest);
       dest.x += width_;
