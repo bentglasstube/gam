@@ -49,6 +49,13 @@ cc_library(
 )
 
 cc_library(
+    name = "parallax_backdrop",
+    srcs = ["parallax_backdrop.cc"],
+    hdrs = ["parallax_backdrop.h"],
+    deps = [":graphics"],
+)
+
+cc_library(
     name = "particle",
     srcs = ["particle.cc"],
     hdrs = ["particle.h"],
