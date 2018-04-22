@@ -46,7 +46,6 @@ void Game::loop(Screen* initial_screen) {
       if (!screen_) return;
       screen_->init();
 
-      audio.stop_music();
     }
 
     last_update = update;
