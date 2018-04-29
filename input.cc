@@ -4,13 +4,13 @@ Input::Input() : gamepad_(nullptr), keybinds_(kDefaultKeyBinds),
   padbinds_(kDefaultPadBinds), axisbinds_(kDefaultAxisBinds) {}
 
 void Input::init() {
-  SDL_GameControllerAddMapping("03000000571d00002100000010010000,Tomee NES Adapter,platform:Windows,a:b1,b:b0,back:b2,start:b3,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0");
-  SDL_GameControllerAddMapping("030000004c0500006802000011810000,Sony PLAYSTATION(R)3 Controller,platform:Linux,a:b0,b:b1,x:b3,y:b2,back:b8,guide:b10,start:b9,leftstick:b11,rightstick:b12,leftshoulder:b4,rightshoulder:b5,dpup:b13,dpdown:b14,dpleft:b15,dpright:b16,leftx:a0,lefty:a1,rightx:a3,righty:a4,lefttrigger:a2,righttrigger:a5");
-  SDL_GameControllerAddMapping("03000000c82d000021ab000010010000,SFC30 Joystick,platform:Linux,a:b1,b:b0,x:b4,y:b3,back:b10,start:b11,leftshoulder:b6,rightshoulder:b7,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0");
-  SDL_GameControllerAddMapping("03000000cfab00000800000011010000,ABCF Nintender,platform:Linux,a:b2,b:b0,x:b3,y:b1,back:b4,start:b5,leftshoulder:b6,rightshoulder:b7,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0");
-
-  SDL_GameControllerAddMapping("03000000571d00002100000000000000,Tomee NES Adapter,platform:Windows,a:b1,b:b0,back:b2,start:b3,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0");
-  SDL_GameControllerAddMapping("03000000cfab00000800000000000000,ABCF Nintender,platform:Windows,a:b2,b:b0,x:b3,y:b1,back:b4,start:b5,leftshoulder:b6,rightshoulder:b7,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0");
+  SDL_GameControllerAddMapping("03000000571d00002100000010010000,Tomee NES Adapter,a:b1,b:b0,back:b2,start:b3,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0");
+  SDL_GameControllerAddMapping("03000000571d00002100000000000000,Tomee NES Adapter,a:b1,b:b0,back:b2,start:b3,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0");
+  SDL_GameControllerAddMapping("030000004c0500006802000011810000,Sony PLAYSTATION(R)3 Controller,a:b0,b:b1,x:b3,y:b2,back:b8,guide:b10,start:b9,leftstick:b11,rightstick:b12,leftshoulder:b4,rightshoulder:b5,dpup:b13,dpdown:b14,dpleft:b15,dpright:b16,leftx:a0,lefty:a1,rightx:a3,righty:a4,lefttrigger:a2,righttrigger:a5");
+  SDL_GameControllerAddMapping("03000000c82d000021ab000010010000,SFC30 Joystick,a:b1,b:b0,x:b4,y:b3,back:b10,start:b11,leftshoulder:b6,rightshoulder:b7,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0");
+  SDL_GameControllerAddMapping("03000000c82d000021ab000000000000,SFC30 Joystick,a:b1,b:b0,x:b4,y:b3,back:b10,start:b11,leftshoulder:b6,rightshoulder:b7,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0,");
+  SDL_GameControllerAddMapping("03000000cfab00000800000011010000,ABCF Nintender,a:b2,b:b0,x:b3,y:b1,back:b4,start:b5,leftshoulder:b6,rightshoulder:b7,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0");
+  SDL_GameControllerAddMapping("03000000cfab00000800000000000000,ABCF Nintender,a:b2,b:b0,x:b3,y:b1,back:b4,start:b5,leftshoulder:b6,rightshoulder:b7,dpup:-a1,dpdown:+a1,dpleft:-a0,dpright:+a0");
 
   const int count = SDL_NumJoysticks();
   for (int i = 0; i < count; ++i) {
