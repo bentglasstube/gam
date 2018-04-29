@@ -46,6 +46,7 @@ class Input {
     static const std::unordered_map<int, Button> kDefaultKeyBinds;
     static const std::unordered_map<int, Button> kDefaultPadBinds;
     static const std::unordered_map<int, std::pair<Button, Button>> kDefaultAxisBinds;
+    static const std::vector<std::string> kGamepadDB;
 
     typedef std::unordered_set<Button, Util::CastHash<Button>> ButtonSet;
 
