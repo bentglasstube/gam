@@ -23,7 +23,10 @@ void Input::init() {
 }
 
 Input::~Input() {
-  if (gamepad_) SDL_GameControllerClose(gamepad_);
+  // Cleaning this up properly results in a double free for some reason.  It
+  // doesn't really hurt anything to not free this since it closes at the end
+  // of the program anyway.
+  // if (gamepad_) SDL_GameControllerClose(gamepad_);
 }
 
 bool Input::process() {
