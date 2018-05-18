@@ -1,6 +1,6 @@
 #include "input.h"
 
-Input::Input() : gamepad_(nullptr), keybinds_(kDefaultKeyBinds),
+Input::Input() : keybinds_(kDefaultKeyBinds),
   padbinds_(kDefaultPadBinds), axisbinds_(kDefaultAxisBinds) {}
 
 void Input::init() {
@@ -9,24 +9,13 @@ void Input::init() {
   const int count = SDL_NumJoysticks();
   for (int i = 0; i < count; ++i) {
     if (SDL_IsGameController(i)) {
-      gamepad_ = SDL_GameControllerOpen(i);
-      if (gamepad_) {
-        fprintf(stderr, "Found controller %s\n", SDL_JoystickNameForIndex(i));
-        break;
-      }
+      SDL_GameControllerOpen(i);
     }
   }
 
   for (int i = 0; i < kMaxAxes; ++i) {
     axis_prev_[i] = 0;
   }
-}
-
-Input::~Input() {
-  // Cleaning this up properly results in a double free for some reason.  It
-  // doesn't really hurt anything to not free this since it closes at the end
-  // of the program anyway.
-  // if (gamepad_) SDL_GameControllerClose(gamepad_);
 }
 
 bool Input::process() {

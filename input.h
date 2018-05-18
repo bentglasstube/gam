@@ -51,7 +51,6 @@ class Input {
     typedef std::unordered_set<Button, Util::CastHash<Button>> ButtonSet;
 
     ButtonSet held_, pressed_, released_;
-    SDL_GameController* gamepad_;
     bool editing_;
     std::string string_;
     int axis_prev_[kMaxAxes];
