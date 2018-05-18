@@ -24,6 +24,8 @@ class Input {
     void init();
     bool process();
 
+    bool has_gamepad() const { return gamepad_; };
+
     bool key_pressed(Button key) const { return pressed_.count(key) > 0; }
     bool key_released(Button key) const { return released_.count(key) > 0; }
     bool key_held(Button key) const { return held_.count(key) > 0; }
@@ -50,7 +52,7 @@ class Input {
     typedef std::unordered_set<Button, Util::CastHash<Button>> ButtonSet;
 
     ButtonSet held_, pressed_, released_;
-    bool editing_;
+    bool editing_, gamepad_;
     std::string string_;
     int axis_prev_[kMaxAxes];
     std::unordered_map<int, Button> keybinds_, padbinds_;
@@ -73,4 +75,6 @@ class Input {
     void process_axis(int cur, int prev, Button neg, Button pos);
     void press(Button button);
     void release(Button button);
+
+    void process_controllers();
 };

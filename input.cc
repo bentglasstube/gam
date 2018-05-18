@@ -6,12 +6,7 @@ Input::Input() : keybinds_(kDefaultKeyBinds),
 void Input::init() {
   for (const auto& m : kGamepadDB) SDL_GameControllerAddMapping(m.c_str());
 
-  const int count = SDL_NumJoysticks();
-  for (int i = 0; i < count; ++i) {
-    if (SDL_IsGameController(i)) {
-      SDL_GameControllerOpen(i);
-    }
-  }
+  process_controllers();
 
   for (int i = 0; i < kMaxAxes; ++i) {
     axis_prev_[i] = 0;
@@ -53,6 +48,11 @@ bool Input::process() {
 
       case SDL_CONTROLLERAXISMOTION:
         pad_axis(event);
+        break;
+
+      case SDL_CONTROLLERDEVICEADDED:
+      case SDL_CONTROLLERDEVICEREMOVED:
+        process_controllers();
         break;
 
       case SDL_QUIT:
@@ -175,6 +175,17 @@ void Input::release(Input::Button b) {
   if (b != Input::Button::None) {
     released_.insert(b);
     held_.erase(b);
+  }
+}
+
+void Input::process_controllers() {
+  gamepad_ = false;
+  const int count = SDL_NumJoysticks();
+  for (int i = 0; i < count; ++i) {
+    if (SDL_IsGameController(i)) {
+      SDL_GameControllerOpen(i);
+      gamepad_ = true;
+    }
   }
 }
 
