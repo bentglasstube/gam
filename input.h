@@ -20,7 +20,6 @@ class Input {
     };
 
     Input();
-    ~Input();
 
     void init();
     bool process();
