@@ -16,7 +16,8 @@ class Input {
       Up, Down, Left, Right,
       Start, Select,
       A, B, X, Y, L, R,
-      User1, User2, User3, User4
+      User1, User2, User3, User4,
+      FullScreen,
     };
 
     Input();

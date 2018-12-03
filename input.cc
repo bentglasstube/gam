@@ -210,6 +210,7 @@ const std::unordered_map<int, Input::Button> Input::kDefaultKeyBinds = {
   { SDL_SCANCODE_RSHIFT,  Input::Button::R },
   { SDL_SCANCODE_TAB,     Input::Button::Select },
   { SDL_SCANCODE_RETURN,  Input::Button::Start },
+  { SDL_SCANCODE_F,       Input::Button::FullScreen },
 };
 
 const std::unordered_map<int, Input::Button> Input::kDefaultPadBinds = {

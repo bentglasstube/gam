@@ -19,6 +19,8 @@ Graphics::Graphics(const Config& config) : config_(config) {
       config_.width, config_.height, window_flags);
   renderer_ = SDL_CreateRenderer(window_, -1, renderer_flags);
 
+  if (!config_.fullscreen) set_window_size();
+
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
   SDL_RenderSetLogicalSize(renderer_, config_.width, config_.height);
   SDL_RenderSetIntegerScale(renderer_, config_.intscale ? SDL_TRUE : SDL_FALSE);
@@ -70,6 +72,13 @@ void Graphics::flip() {
 void Graphics::clear() {
   SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
   SDL_RenderClear(renderer_);
+}
+
+void Graphics::toggle_fullscreen() {
+  config_.fullscreen = !config_.fullscreen;
+  SDL_SetWindowFullscreen(window_, config_.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+
+  if (!config_.fullscreen) set_window_size();
 }
 
 void Graphics::draw_pixel(int x, int y, int color) {
@@ -145,4 +154,10 @@ void Graphics::set_color(int color) {
   const int a = (color & 0x000000ff);
 
   SDL_SetRenderDrawColor(renderer_, r, g, b, a);
+}
+
+void Graphics::set_window_size() {
+  SDL_SetWindowSize(window_,
+      config_.width * config_.scale,
+      config_.height * config_.scale);
 }

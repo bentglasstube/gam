@@ -33,6 +33,9 @@ void Game::loop(Screen* initial_screen) {
     const unsigned int update = SDL_GetTicks();
     const unsigned int frame_ticks = update - last_update;
 
+    if (input_.key_pressed(Input::Button::FullScreen))
+      graphics.toggle_fullscreen();
+
     screen_->count_frame(frame_ticks);
     if (screen_->update(input_, audio, frame_ticks)) {
 

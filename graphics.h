@@ -8,8 +8,9 @@ class Graphics {
   public:
 
     struct Config {
-      Config() : fullscreen(true), opengl(true), vsync(true), intscale(true) {}
+      Config() : fullscreen(true), opengl(true), vsync(true), intscale(true), scale(1) {}
       bool fullscreen, opengl, vsync, intscale;
+      int scale;
       std::string title;
       int width, height;
     };
@@ -23,6 +24,7 @@ class Graphics {
     void blit_ex(const std::string& file, const SDL_Rect* s, const SDL_Rect* d, const float angle, const SDL_Point* center, const FlipDirection flip);
     void flip();
     void clear();
+    void toggle_fullscreen();
 
     void draw_pixel(int x, int y, int color);
     void draw_line(int x1, int y1, int x2, int y2, int color);
@@ -44,4 +46,5 @@ class Graphics {
     SDL_Renderer* renderer_;
 
     void set_color(int color);
+    void set_window_size();
 };
