@@ -36,9 +36,7 @@ size_t Util::sysrandom(void* dst, size_t length) {
   return length;
 }
 
-#endif
-
-#ifdef __unix__
+#else
 
 #include <fstream>
 
