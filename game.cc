@@ -28,6 +28,8 @@ void Game::loop(Screen* initial_screen) {
   screen_->init();
 
   while (true) {
+    const std::string track = screen_->get_music_track();
+    if (track != "") audio.play_music(track);
     if (!input_.process()) return;
 
     const unsigned int update = SDL_GetTicks();

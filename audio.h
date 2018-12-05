@@ -29,9 +29,9 @@ class Audio {
     void resume() { Mix_Resume(-1); }
 
     void play_music(const std::string& name);
-    void stop_music() { Mix_FadeOutMusic(config_.fade_time); }
-    void music_volume(int volume) { Mix_VolumeMusic(MIX_MAX_VOLUME * volume / 10); }
-    bool music_playing() const { return Mix_PlayingMusic() == 1; }
+    void stop_music();
+    void music_volume(int volume);
+    bool music_playing() const;
 
   private:
 
@@ -45,5 +45,6 @@ class Audio {
 
     ChunkMap chunks_;
     MusicMap musics_;
+    std::string current_track_;
 
 };

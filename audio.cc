@@ -30,8 +30,24 @@ void Audio::play_sample(const std::string& name) {
 }
 
 void Audio::play_music(const std::string& name) {
-  Mix_Music* music = load_music(name);
-  Mix_FadeInMusic(music, 1, config_.fade_time);
+  if (name != current_track_) {
+    Mix_Music* music = load_music(name);
+    Mix_FadeInMusic(music, 1, config_.fade_time);
+    current_track_ = name;
+  }
+}
+
+void Audio::stop_music() {
+  Mix_FadeOutMusic(config_.fade_time);
+  current_track_ = "";
+}
+
+void Audio::music_volume(int volume) {
+  Mix_VolumeMusic(MIX_MAX_VOLUME * volume / 10);
+}
+
+bool Audio::music_playing() const {
+  return Mix_PlayingMusic() == 1;
 }
 
 Mix_Chunk* Audio::load_chunk(const std::string& file) {
