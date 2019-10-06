@@ -2,11 +2,11 @@
 
 // TODO replace with spritemap
 
-Text::Text(const std::string& file, int width) : file_(file), width_(width) {}
+Text::Text(const std::string& file, int width, int height) : file_(file), width_(width), height_(height) {}
 
 void Text::draw(Graphics& graphics, const std::string& text, int x, int y, Text::Alignment alignment) const {
-  SDL_Rect source = { 0, 0, width_, width_ * 2};
-  SDL_Rect dest = { x, y, width_, width_ * 2 };
+  SDL_Rect source = { 0, 0, width_, height_ };
+  SDL_Rect dest = { x, y, width_, height_ };
 
   switch (alignment) {
     case Alignment::Left:
@@ -26,13 +26,13 @@ void Text::draw(Graphics& graphics, const std::string& text, int x, int y, Text:
     if ((*i) >= ' ' && (*i) <= '~') n = (*i) - ' ';
 
     source.x = width_ * (n % 16);
-    source.y = width_ * 2 * (n / 16);
+    source.y = height_ * (n / 16);
 
     graphics.blit(file_, &source, &dest);
 
     if ((*i) == '\n' && alignment == Alignment::Left) {
       dest.x = x;
-      dest.y += width_ * 2;
+      dest.y += height_;
     } else {
       dest.x += width_;
     }
