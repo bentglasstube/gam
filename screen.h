@@ -11,6 +11,7 @@ class Screen {
   public:
 
     Screen();
+    virtual ~Screen();
 
     virtual void init() {}
     virtual bool update(const Input& input, Audio& audio, unsigned int elapsed) = 0;

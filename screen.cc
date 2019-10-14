@@ -4,6 +4,8 @@ Screen::Screen() : counter_(0) {
   for (int i = 0; i < kFpsFrames; ++i) ticks_[i] = 0;
 }
 
+Screen::~Screen() {}
+
 float Screen::fps() const {
   unsigned int total = 0;
   for (int i = 0; i < kFpsFrames; ++i) total += ticks_[i];
