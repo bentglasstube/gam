@@ -22,7 +22,7 @@ class Game {
     void loop(Screen* initial_screen);
 
     void start(Screen* initial_screen);
-    void step();
+    bool step();
 
     void bind_key(SDL_Scancode scancode, Input::Button button);
     void bind_pad(SDL_GameControllerButton pad, Input::Button button);

@@ -20,8 +20,8 @@ Game::~Game() {
 
 void Game::loop(Screen* initial_screen) {
   start(initial_screen);
-  while (true) {
-    step();
+  while (step()) {
+    // do nothing
   }
 }
 
@@ -35,10 +35,10 @@ void Game::start(Screen* initial_screen) {
   screen_->init();
 }
 
-void Game::step() {
+bool Game::step() {
   const std::string track = screen_->get_music_track();
   if (track != "") audio_->play_music(track);
-  if (!input_.process()) return;
+  if (!input_.process()) return false;
 
   const unsigned int update = SDL_GetTicks();
   const unsigned int frame_ticks = update - last_update_;
@@ -56,12 +56,13 @@ void Game::step() {
   } else {
 
     screen_.reset(std::move(screen_->next_screen()));
-    if (!screen_) return;
+    if (!screen_) return false;
     screen_->init();
 
   }
 
   last_update_ = update;
+  return true;
 }
 
 void Game::bind_key(SDL_Scancode scancode, Input::Button button) {
