@@ -29,10 +29,10 @@ void Audio::play_sample(const std::string& name) {
   Mix_PlayChannel(-1, chunk, 0);
 }
 
-void Audio::play_music(const std::string& name) {
+void Audio::play_music(const std::string& name, bool loop) {
   if (name != current_track_) {
     Mix_Music* music = load_music(name);
-    Mix_FadeInMusic(music, 1, config_.fade_time);
+    Mix_FadeInMusic(music, loop ? -1 : 0, config_.fade_time);
     current_track_ = name;
   }
 }

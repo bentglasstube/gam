@@ -28,7 +28,7 @@ class Audio {
     void pause() { Mix_Pause(-1); }
     void resume() { Mix_Resume(-1); }
 
-    void play_music(const std::string& name);
+    void play_music(const std::string& name, bool loop);
     void stop_music();
     void music_volume(int volume);
     bool music_playing() const;
