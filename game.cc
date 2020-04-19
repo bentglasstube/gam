@@ -37,7 +37,7 @@ void Game::start(Screen* initial_screen) {
 
 bool Game::step() {
   const std::string track = screen_->get_music_track();
-  if (track != "") audio_->play_music(track);
+  if (track != "") audio_->play_music(track, true);
   if (!input_.process()) return false;
 
   const unsigned int update = SDL_GetTicks();
