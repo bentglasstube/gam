@@ -31,6 +31,7 @@ class Game {
   private:
 
     void init();
+    void set_screen(Screen* screen);
 
     Config config_;
     Input input_;
@@ -39,4 +40,5 @@ class Game {
     std::unique_ptr<Audio> audio_;
 
     unsigned int last_update_;
+    std::string music_track_;
 };

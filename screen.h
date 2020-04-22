@@ -13,7 +13,6 @@ class Screen {
     Screen();
     virtual ~Screen();
 
-    virtual void init() {}
     virtual bool update(const Input& input, Audio& audio, unsigned int elapsed) = 0;
     virtual void draw(Graphics& graphics) const = 0;
     virtual Screen* next_screen() const { return nullptr; }

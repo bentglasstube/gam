@@ -31,13 +31,10 @@ void Game::start(Screen* initial_screen) {
 
   last_update_ = SDL_GetTicks();
 
-  screen_.reset(std::move(initial_screen));
-  screen_->init();
+  set_screen(std::move(initial_screen));
 }
 
 bool Game::step() {
-  const std::string track = screen_->get_music_track();
-  if (track != "") audio_->play_music(track, true);
   if (!input_.process()) return false;
 
   const unsigned int update = SDL_GetTicks();
@@ -48,21 +45,15 @@ bool Game::step() {
 
   screen_->count_frame(frame_ticks);
   if (screen_->update(input_, static_cast<Audio&>(*audio_), frame_ticks)) {
-
     graphics_->clear();
     screen_->draw(static_cast<Graphics&>(*graphics_));
     graphics_->flip();
-
   } else {
-
-    screen_.reset(std::move(screen_->next_screen()));
-    if (!screen_) return false;
-    screen_->init();
-
+    set_screen(std::move(screen_->next_screen()));
   }
 
   last_update_ = update;
-  return true;
+  return screen_.get() != nullptr;
 }
 
 void Game::bind_key(SDL_Scancode scancode, Input::Button button) {
@@ -81,4 +72,18 @@ void Game::init() {
   SDL_Init(SDL_INIT_EVERYTHING);
   SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
   input_.init();
+}
+
+void Game::set_screen(Screen* screen) {
+  screen_.reset(std::move(screen));
+
+  if (screen_) {
+    const std::string track = screen_->get_music_track();
+    if (track == "") {
+      audio_->stop_music();
+    } else if (track != music_track_) {
+      music_track_ = track;
+      audio_->play_music(track, true);
+    }
+  }
 }
