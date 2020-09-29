@@ -1,5 +1,8 @@
 #include "graphics.h"
 
+#include <assert.h>
+#include <utility>
+
 #include <SDL2/SDL_image.h>
 
 #ifndef M_PI
@@ -84,43 +87,45 @@ void Graphics::toggle_fullscreen() {
   if (!config_.fullscreen) set_window_size();
 }
 
-void Graphics::draw_pixel(int x, int y, int color) {
+void Graphics::draw_pixel(Point p, Color color) {
   set_color(color);
-  SDL_RenderDrawPoint(renderer_, x, y);
+  SDL_RenderDrawPoint(renderer_, p.x, p.y);
 }
 
-void Graphics::draw_line(int x1, int y1, int x2, int y2, int color) {
+void Graphics::draw_line(Point p1, Point p2, Color color) {
   set_color(color);
-  SDL_RenderDrawLine(renderer_, x1, y1, x2, y2);
+  // TODO fix diagonal lines
+  SDL_RenderDrawLine(renderer_, p1.x, p1.y, p2.x, p2.y);
 }
 
-void Graphics::draw_rect(const SDL_Rect* rect, int color, bool filled) {
+void Graphics::draw_rect(Point p1, Point p2, Color color, bool filled) {
   set_color(color);
-  filled ? SDL_RenderFillRect(renderer_, rect) : SDL_RenderDrawRect(renderer_, rect);
+  SDL_Rect rect = { p1.x, p1.y, p2.x - p1.x, p2.y - p1.y };
+  filled ? SDL_RenderFillRect(renderer_, &rect) : SDL_RenderDrawRect(renderer_, &rect);
 }
 
-void Graphics::draw_circle(int x, int y, int r, int color, bool filled) {
+void Graphics::draw_circle(Point center, int r, Color color, bool filled) {
   set_color(color);
   int cx = r, cy = 0, error = 0;
 
   while (cx >= cy) {
     if (filled) {
-      SDL_RenderDrawLine(renderer_, x - cx, y + cy, x + cx, y + cy);
-      SDL_RenderDrawLine(renderer_, x - cy, y + cx, x + cy, y + cx);
-      SDL_RenderDrawLine(renderer_, x - cx, y - cy, x + cx, y - cy);
-      SDL_RenderDrawLine(renderer_, x - cy, y - cx, x + cy, y - cx);
+      SDL_RenderDrawLine(renderer_, center.x - cx, center.y + cy, center.x + cx, center.y + cy);
+      SDL_RenderDrawLine(renderer_, center.x - cy, center.y + cx, center.x + cy, center.y + cx);
+      SDL_RenderDrawLine(renderer_, center.x - cx, center.y - cy, center.x + cx, center.y - cy);
+      SDL_RenderDrawLine(renderer_, center.x - cy, center.y - cx, center.x + cy, center.y - cx);
     } else {
       SDL_Point points[8];
 
-      points[0].x = points[7].x = x + cx;
-      points[1].x = points[6].x = x + cy;
-      points[2].x = points[5].x = x - cy;
-      points[3].x = points[4].x = x - cx;
+      points[0].x = points[7].x = center.x + cx;
+      points[1].x = points[6].x = center.x + cy;
+      points[2].x = points[5].x = center.x - cy;
+      points[3].x = points[4].x = center.x - cx;
 
-      points[0].y = points[3].y = y + cy;
-      points[1].y = points[2].y = y + cx;
-      points[4].y = points[7].y = y - cy;
-      points[5].y = points[6].y = y - cx;
+      points[0].y = points[3].y = center.y + cy;
+      points[1].y = points[2].y = center.y + cx;
+      points[4].y = points[7].y = center.y - cy;
+      points[5].y = points[6].y = center.y - cx;
 
       SDL_RenderDrawPoints(renderer_, points, 8);
     }
@@ -131,6 +136,60 @@ void Graphics::draw_circle(int x, int y, int r, int color, bool filled) {
       --cx;
       error += 1 - 2 * cx;
     }
+  }
+}
+
+void Graphics::draw_triangle_top(Point p1, Point p2, Point p3, Color color) {
+  assert(p2.y == p3.y);
+
+  const float s1 = (float)(p2.x - p1.x) / (float)(p2.y - p1.y);
+  const float s2 = (float)(p3.x - p1.x) / (float)(p3.y - p1.y);
+
+  float x1 = p1.x, x2 = p1.x;
+  for (int y = p1.y; y <= p2.y; ++y) {
+    draw_line({(int)x1, y}, {(int)x2, y}, color);
+    x1 += s1;
+    x2 += s2;
+  }
+}
+
+void Graphics::draw_triangle_bottom(Point p1, Point p2, Point p3, Color color) {
+  assert(p1.y == p2.y);
+
+  const float s1 = (p3.x - p2.x) / (float)(p3.y - p2.y);
+  const float s2 = (p3.x - p1.x) / (float)(p3.y - p1.y);
+
+  float x1 = p3.x, x2 = p3.x;
+  for (int y = p3.y; y >= p2.y; --y) {
+    draw_line({(int)x1, y}, {(int)x2, y}, color);
+    x1 -= s1;
+    x2 -= s2;
+  }
+}
+
+void Graphics::draw_triangle(Point p1, Point p2, Point p3, Color color, bool filled) {
+  if (filled) {
+    if (p1.y > p2.y) p2 = std::exchange(p1, p2);
+    if (p2.y > p3.y) p3 = std::exchange(p2, p3);
+    if (p1.y > p2.y) p2 = std::exchange(p1, p2);
+
+    assert(p1.y <= p2.y);
+    assert(p2.y <= p3.y);
+
+    if (p2.y == p3.y) {
+      draw_triangle_top(p1, p2, p3, color);
+    } else if (p1.y == p2.y) {
+      draw_triangle_bottom(p1, p2, p3, color);
+    } else {
+      Point p4 = { p1.x + (p2.y - p1.y) * (p3.x - p1.x) / (p3.y - p1.y), p2.y };
+      draw_triangle_top(p1, p2, p4, color);
+      draw_triangle_bottom(p2, p4, p3, color);
+    }
+
+  } else {
+    draw_line(p1, p2, color);
+    draw_line(p2, p3, color);
+    draw_line(p3, p1, color);
   }
 }
 

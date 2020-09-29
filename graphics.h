@@ -15,6 +15,12 @@ class Graphics {
       int width, height;
     };
 
+    struct Point {
+      int x, y;
+    };
+
+    typedef uint32_t Color;
+
     enum class FlipDirection { None, Horizontal, Vertical, Both };
 
     Graphics(const Config& config);
@@ -26,10 +32,11 @@ class Graphics {
     void clear();
     void toggle_fullscreen();
 
-    void draw_pixel(int x, int y, int color);
-    void draw_line(int x1, int y1, int x2, int y2, int color);
-    void draw_rect(const SDL_Rect* rect, int color, bool filled);
-    void draw_circle(int x, int y, int r, int color, bool filled);
+    void draw_pixel(Point p, Color color);
+    void draw_line(Point p1, Point p2, Color color);
+    void draw_rect(Point p1, Point p2, Color color, bool filled);
+    void draw_circle(Point center, int radius, Color color, bool filled);
+    void draw_triangle(Point p1, Point p2, Point p3, Color color, bool filled);
 
     int width() const { return config_.width; }
     int height() const { return config_.height; }
@@ -47,4 +54,6 @@ class Graphics {
 
     void set_color(int color);
     void set_window_size();
+    void draw_triangle_top(Point p1, Point p2, Point p3, Color color);
+    void draw_triangle_bottom(Point p1, Point p2, Point p3, Color color);
 };

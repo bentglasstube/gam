@@ -51,6 +51,25 @@ class ExampleScreen : public Screen {
       if (buttons_[5]) indicator_.draw(graphics, 120 + dx, 60 + dy);
       if (buttons_[6]) indicator_.draw(graphics, 168 + dx, 60 + dy);
       if (buttons_[7]) indicator_.draw(graphics, 208 + dx, 60 + dy);
+
+      const Graphics::Color c1 = 0xd8ff00ff;
+      const Graphics::Color c2 = 0xff00d8ff;
+
+      graphics.draw_pixel({0, 192}, c1);
+
+      graphics.draw_line({12, 192}, {12, 224}, c1);
+      graphics.draw_line({ 4, 208}, {20, 208}, c2);
+      graphics.draw_line({ 6, 194}, {18, 222}, c1);
+      graphics.draw_line({ 6, 222}, {18, 194}, c2);
+
+      graphics.draw_rect({24, 192}, {40, 224}, c1, true);
+      graphics.draw_rect({24, 192}, {40, 224}, c2, false);
+
+      graphics.draw_circle({64, 208}, 16, c1, true);
+      graphics.draw_circle({64, 208}, 16, c2, false);
+
+      graphics.draw_triangle({144, 224}, {168, 208}, {152, 192}, c1, true);
+      graphics.draw_triangle({144, 224}, {168, 208}, {152, 192}, c2, false);
     }
 
     Screen* next_screen() const override {
