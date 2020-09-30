@@ -3,13 +3,27 @@
 #include "sprite.h"
 #include "text.h"
 
+#include <cmath>
+#include <random>
+
 class ExampleScreen : public Screen {
   public:
 
     ExampleScreen() :
       text_("text.png"),
       controller_("controller.png", 0, 0, 256, 96),
-      indicator_("indicator.png", 0, 0, 16, 16) {}
+      indicator_("indicator.png", 0, 0, 16, 16) { random_triangle(); }
+
+    void random_triangle() {
+      std::random_device dev;
+      std::mt19937 rng(dev());
+      std::uniform_int_distribution<int> rx(0, 255);
+      std::uniform_int_distribution<int> ry(0, 241);
+
+      p1_ = { rx(rng), ry(rng) };
+      p2_ = { rx(rng), ry(rng) };
+      p3_ = { rx(rng), ry(rng) };
+    }
 
     bool update(const Input& input, Audio& audio, unsigned int) override {
       buttons_[0] = input.key_held(Input::Button::Up);
@@ -32,12 +46,28 @@ class ExampleScreen : public Screen {
       if (input.key_pressed(Input::Button::B)) audio.play_sample("noise0.wav");
       if (input.key_pressed(Input::Button::A)) audio.play_sample("noise1.wav");
 
+      if (input.any_pressed()) random_triangle();
+
       return true;
     }
 
     void draw(Graphics& graphics) const override {
       const int dx = graphics.width() / 2 - 128;
       const int dy = graphics.height() / 2 - 48;
+
+      const Graphics::Color c1 = 0xd8ff00ff;
+      const Graphics::Color c2 = 0xff00d8ff;
+
+      for (int a = 0; a < 360; a += 5) {
+        const int x = (int)(128 + std::cos(a * M_PI / 180.0f) * 100);
+        const int y = (int)(112 + std::sin(a * M_PI / 180.0f) * 100);
+        graphics.draw_line({128, 112}, {x, y}, a % 2 == 0 ? c1 : c2);
+      }
+
+      graphics.draw_circle({128, 112}, 100, 0xffffffff, false);
+
+      graphics.draw_triangle(p1_, p2_, p3_, 0x99999999, true);
+      graphics.draw_triangle(p1_, p2_, p3_, 0xffffffff, false);
 
       text_.draw(graphics, "libgam example", graphics.width() / 2, dy - 24, Text::Alignment::Center);
 
@@ -51,16 +81,6 @@ class ExampleScreen : public Screen {
       if (buttons_[5]) indicator_.draw(graphics, 120 + dx, 60 + dy);
       if (buttons_[6]) indicator_.draw(graphics, 168 + dx, 60 + dy);
       if (buttons_[7]) indicator_.draw(graphics, 208 + dx, 60 + dy);
-
-      const Graphics::Color c1 = 0xd8ff00ff;
-      const Graphics::Color c2 = 0xff00d8ff;
-
-      graphics.draw_pixel({0, 192}, c1);
-
-      graphics.draw_line({12, 192}, {12, 224}, c1);
-      graphics.draw_line({ 4, 208}, {20, 208}, c2);
-      graphics.draw_line({ 6, 194}, {18, 222}, c1);
-      graphics.draw_line({ 6, 222}, {18, 194}, c2);
 
       graphics.draw_rect({24, 192}, {40, 224}, c1, true);
       graphics.draw_rect({24, 192}, {40, 224}, c2, false);
@@ -81,8 +101,8 @@ class ExampleScreen : public Screen {
     Text text_;
     Sprite controller_, indicator_;
     bool buttons_[8];
+    Graphics::Point p1_, p2_, p3_;
 };
-
 
 int main(int, char**) {
   Game::Config config;

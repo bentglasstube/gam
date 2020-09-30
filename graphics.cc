@@ -1,6 +1,7 @@
 #include "graphics.h"
 
 #include <assert.h>
+#include <cmath>
 #include <utility>
 
 #include <SDL2/SDL_image.h>
@@ -94,8 +95,65 @@ void Graphics::draw_pixel(Point p, Color color) {
 
 void Graphics::draw_line(Point p1, Point p2, Color color) {
   set_color(color);
-  // TODO fix diagonal lines
-  SDL_RenderDrawLine(renderer_, p1.x, p1.y, p2.x, p2.y);
+  if (p1.x == p2.x || p1.y == p2.y) {
+    // SDL handles horizontal and vertical lines correctly
+    SDL_RenderDrawLine(renderer_, p1.x, p1.y, p2.x, p2.y);
+  } else {
+
+    // Bresenham for angled lines
+    const int dx = std::abs(p1.x - p2.x);
+    const int dy = std::abs(p1.y - p2.y);
+
+    if (dx < dy) {
+      if (p1.y > p2.y) std::swap(p1, p2);
+
+      for (int y = p1.y; y <= p2.y; ++y) {
+        int x = (int)std::round((y - p1.y) / (float)(p2.y - p1.y) * (p2.x - p1.x) + p1.x);
+        draw_pixel({x, y}, color);
+      }
+
+      /* TODO optimized implementation
+      int e = 2 * dy - dx;
+      int y = p1.y;
+
+      while (p1.y <= p2.y) {
+        while (e >= 0) {
+          ++y;
+          e -= 2 * dx;
+        }
+        SDL_RenderDrawLine(renderer_, p1.x, p1.y, p1.x, y - 1);
+
+        p1.y = y;
+        p1.x += p1.x < p2.x ? 1 : -1;
+        e += 2 * dy;
+      }
+      */
+    } else {
+      if (p1.x > p2.x) std::swap(p1, p2);
+
+      for (int x = p1.x; x <= p2.x; ++x) {
+        int y = (int)std::round((x - p1.x) / (float)(p2.x - p1.x) * (p2.y - p1.y) + p1.y);
+        draw_pixel({x, y}, color);
+      }
+
+      /* TODO optimized implementation
+      int e = 2 * dx - dy;
+      int x = p1.x;
+
+      while (p1.x <= p2.x) {
+        while (e >= 0) {
+          ++x;
+          e -= 2 * dy;
+        }
+        SDL_RenderDrawLine(renderer_, p1.x, p1.y, x - 1, p1.y);
+
+        p1.x = x;
+        p1.y += p1.y < p2.y ? 1 : -1;
+        e += 2 * dx;
+      }
+      */
+    }
+  }
 }
 
 void Graphics::draw_rect(Point p1, Point p2, Color color, bool filled) {
@@ -147,7 +205,7 @@ void Graphics::draw_triangle_top(Point p1, Point p2, Point p3, Color color) {
 
   float x1 = p1.x, x2 = p1.x;
   for (int y = p1.y; y <= p2.y; ++y) {
-    draw_line({(int)x1, y}, {(int)x2, y}, color);
+    draw_line({(int)std::round(x1), y}, {(int)std::round(x2), y}, color);
     x1 += s1;
     x2 += s2;
   }
@@ -160,8 +218,8 @@ void Graphics::draw_triangle_bottom(Point p1, Point p2, Point p3, Color color) {
   const float s2 = (p3.x - p1.x) / (float)(p3.y - p1.y);
 
   float x1 = p3.x, x2 = p3.x;
-  for (int y = p3.y; y >= p2.y; --y) {
-    draw_line({(int)x1, y}, {(int)x2, y}, color);
+  for (int y = p3.y; y > p2.y; --y) {
+    draw_line({(int)std::round(x1), y}, {(int)std::round(x2), y}, color);
     x1 -= s1;
     x2 -= s2;
   }
@@ -169,12 +227,9 @@ void Graphics::draw_triangle_bottom(Point p1, Point p2, Point p3, Color color) {
 
 void Graphics::draw_triangle(Point p1, Point p2, Point p3, Color color, bool filled) {
   if (filled) {
-    if (p1.y > p2.y) p2 = std::exchange(p1, p2);
-    if (p2.y > p3.y) p3 = std::exchange(p2, p3);
-    if (p1.y > p2.y) p2 = std::exchange(p1, p2);
-
-    assert(p1.y <= p2.y);
-    assert(p2.y <= p3.y);
+    if (p1.y > p2.y) std::swap(p1, p2);
+    if (p2.y > p3.y) std::swap(p2, p3);
+    if (p1.y > p2.y) std::swap(p1, p2);
 
     if (p2.y == p3.y) {
       draw_triangle_top(p1, p2, p3, color);
