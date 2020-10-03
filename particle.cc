@@ -14,5 +14,5 @@ void Particle::update(unsigned int elapsed) {
 
 void Particle::draw(Graphics& graphics) const {
   int a = 255 * (1 - timer_ / (float) duration_);
-  graphics.draw_pixel(x_, y_, (color_ & 0xffffff00) | a);
+  graphics.draw_pixel({x_, y_}, (color_ & 0xffffff00) | a);
 }
