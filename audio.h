@@ -23,7 +23,7 @@ class Audio {
 
     void stop_samples();
     void play_sample(const std::string& name);
-    void play_random_sample(const std::string& name, int n);
+    void play_random_sample(std::string name, int n);
     void sfx_volume(int volume) { Mix_Volume(-1, MIX_MAX_VOLUME * volume / 10); }
 
     void pause() { Mix_Pause(-1); }

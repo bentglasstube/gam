@@ -31,12 +31,15 @@ void Audio::play_sample(const std::string& name) {
   Mix_PlayChannel(-1, chunk, 0);
 }
 
-void Audio::play_random_sample(const std::string& name, int n) {
+void Audio::play_random_sample(std::string name, int n) {
   std::random_device dev;
   std::mt19937 rnd;
   rnd.seed(dev());
   std::uniform_int_distribution<int> sample(0, n - 1);
-  play_sample(name + std::to_string(sample(rnd)));
+
+  auto const pos = name.find_last_of('.');
+  name.replace(pos, 0, std::to_string(sample(rnd)));
+  play_sample(name);
 }
 
 void Audio::play_music(const std::string& name, bool loop) {
