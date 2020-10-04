@@ -1,5 +1,7 @@
 #include "audio.h"
 
+#include <random>
+
 Audio::Audio(const Config& config) : config_(config) {
   Mix_OpenAudio(config_.frequency, config_.format, config_.channels,
       config_.chunksize);
@@ -27,6 +29,14 @@ void Audio::stop_samples() {
 void Audio::play_sample(const std::string& name) {
   Mix_Chunk* chunk = load_chunk(name);
   Mix_PlayChannel(-1, chunk, 0);
+}
+
+void Audio::play_random_sample(const std::string& name, int n) {
+  std::random_device dev;
+  std::mt19937 rnd;
+  rnd.seed(dev());
+  std::uniform_int_distribution<int> sample(0, n - 1);
+  play_sample(name + std::to_string(sample(rnd)));
 }
 
 void Audio::play_music(const std::string& name, bool loop) {
