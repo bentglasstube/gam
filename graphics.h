@@ -34,6 +34,7 @@ class Graphics {
     void blit_ex(const std::string& file, const SDL_Rect* s, const SDL_Rect* d, const float angle, const SDL_Point* center, const FlipDirection flip);
     void flip();
     void clear();
+    void clear(Color color);
     void toggle_fullscreen();
 
     void draw_pixel(Point p, Color color);
