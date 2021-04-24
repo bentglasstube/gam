@@ -99,3 +99,10 @@ cc_library(
     srcs = ["util.cc"],
     hdrs = ["util.h"],
 )
+
+cc_library(
+    name = "rect",
+    srcs = ["rect.cc"],
+    hdrs = ["rect.h"],
+    deps = [":graphics"],
+)
