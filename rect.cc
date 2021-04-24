@@ -3,7 +3,7 @@
 #include <cassert>
 
 Rect::Rect() : Rect(0, 0, 0, 0) {}
-Rect::Rect(double t, double l, double r, double b) : top(t), left(l), right(r), bottom(b) {
+Rect::Rect(double l, double t, double r, double b) : top(t), left(l), right(r), bottom(b) {
   assert(t <= b);
   assert(l <= r);
 }
