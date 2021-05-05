@@ -14,6 +14,13 @@ cc_library(
 )
 
 cc_library(
+    name = "box",
+    srcs = ["box.cc"],
+    hdrs = ["box.h"],
+    deps = [":graphics"],
+)
+
+cc_library(
     name = "game",
     srcs = ["game.cc"],
     hdrs = ["game.h"],

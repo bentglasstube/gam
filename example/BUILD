@@ -8,6 +8,7 @@ cc_binary(
     ],
     srcs = ["main.cc"],
     deps = [
+        "//:box",
         "//:game",
         "//:screen",
         "//:sprite",

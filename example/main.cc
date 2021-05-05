@@ -1,3 +1,4 @@
+#include "box.h"
 #include "game.h"
 #include "screen.h"
 #include "sprite.h"
@@ -11,6 +12,7 @@ class ExampleScreen : public Screen {
 
     ExampleScreen() :
       text_("text.png"),
+      box_("box.png", 16, 16),
       controller_("controller.png", 0, 0, 256, 96),
       indicator_("indicator.png", 0, 0, 16, 16) { random_triangle(); }
 
@@ -69,6 +71,7 @@ class ExampleScreen : public Screen {
       graphics.draw_triangle(p1_, p2_, p3_, 0x99999999, true);
       graphics.draw_triangle(p1_, p2_, p3_, 0xffffffff, false);
 
+      box_.draw(graphics, graphics.width() / 2 - 96, dy - 40, 192, 176);
       text_.draw(graphics, "libgam example", graphics.width() / 2, dy - 24, Text::Alignment::Center);
 
       controller_.draw(graphics, dx, dy);
@@ -99,6 +102,7 @@ class ExampleScreen : public Screen {
   private:
 
     Text text_;
+    Box box_;
     Sprite controller_, indicator_;
     bool buttons_[8];
     Graphics::Point p1_, p2_, p3_;
