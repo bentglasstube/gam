@@ -19,19 +19,17 @@ class Graphics {
       int width, height;
     };
 
-    struct Point {
-      int x, y;
-    };
+    struct Point { int x, y; };
+    struct Rect { int x, y, w, h; };
 
     typedef uint32_t Color;
-
-    enum class FlipDirection { None, Horizontal, Vertical, Both };
 
     Graphics(const Config& config);
     ~Graphics();
 
-    void blit(const std::string& file, const SDL_Rect* srect, const SDL_Rect* drect);
-    void blit_ex(const std::string& file, const SDL_Rect* s, const SDL_Rect* d, const float angle, const SDL_Point* center, const FlipDirection flip);
+    void blit(const std::string& file, const Rect source, const Rect dest);
+    void blit_flip(const std::string& file, const Rect source, const Rect dest, bool hflip, bool vflip);
+    void blit_rot(const std::string& file, const Rect source, const Rect dest, const float angle, const Point center);
     void flip();
     void clear();
     void clear(Color color);

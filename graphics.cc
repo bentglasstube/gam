@@ -39,33 +39,30 @@ Graphics::~Graphics() {
   SDL_DestroyWindow(window_);
 }
 
-void Graphics::blit(const std::string& file, const SDL_Rect* srect, const SDL_Rect* drect) {
+void Graphics::blit(const std::string& file, const Rect source, const Rect dest) {
   SDL_Texture* texture = load_image(file);
-  SDL_RenderCopy(renderer_, texture, srect, drect);
+  SDL_Rect s = { source.x, source.y, source.w, source.h };
+  SDL_Rect d = { dest.x, dest.y, dest.w, dest.h };
+  SDL_RenderCopy(renderer_, texture, &s, &d);
 }
 
-void Graphics::blit_ex(const std::string& file, const SDL_Rect* srect, const SDL_Rect* drect, const float angle, const SDL_Point* center, const Graphics::FlipDirection flip) {
-  SDL_RendererFlip f = SDL_FLIP_NONE;
-  switch (flip) {
-    case FlipDirection::None:
-      f = SDL_FLIP_NONE;
-      break;
-
-    case FlipDirection::Horizontal:
-      f = SDL_FLIP_HORIZONTAL;
-      break;
-
-    case FlipDirection::Vertical:
-      f = SDL_FLIP_VERTICAL;
-      break;
-
-    case FlipDirection::Both:
-      f = (SDL_RendererFlip) (SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL);
-      break;
-  }
+void Graphics::blit_flip(const std::string& file, const Rect source, const Rect dest, bool hflip, bool vflip) {
+  int f = SDL_FLIP_NONE;
+  if (hflip) f |= SDL_FLIP_HORIZONTAL;
+  if (vflip) f |= SDL_FLIP_VERTICAL;
 
   SDL_Texture* texture = load_image(file);
-  SDL_RenderCopyEx(renderer_, texture, srect, drect, angle * 180.0f / M_PI, center, f);
+  SDL_Rect s = { source.x, source.y, source.w, source.h };
+  SDL_Rect d = { dest.x, dest.y, dest.w, dest.h };
+  SDL_RenderCopyEx(renderer_, texture, &s, &d, 0, nullptr, (SDL_RendererFlip)f);
+}
+
+void Graphics::blit_rot(const std::string& file, const Rect source, const Rect dest, const float angle, const Point center) {
+  SDL_Texture* texture = load_image(file);
+  SDL_Rect s = { source.x, source.y, source.w, source.h };
+  SDL_Rect d = { dest.x, dest.y, dest.w, dest.h };
+  SDL_Point c = { center.x, center.y };
+  SDL_RenderCopyEx(renderer_, texture, &s, &d, angle * 180.0f / M_PI, &c, SDL_FLIP_NONE);
 }
 
 void Graphics::flip() {
