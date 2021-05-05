@@ -2,6 +2,7 @@
 #include "game.h"
 #include "screen.h"
 #include "sprite.h"
+#include "spritemap.h"
 #include "text.h"
 
 #include <cmath>
@@ -13,6 +14,7 @@ class ExampleScreen : public Screen {
     ExampleScreen() :
       text_("text.png"),
       box_("box.png", 16, 16),
+      coin_("coin.png", 4, 16, 16),
       controller_("controller.png", 0, 0, 256, 96),
       indicator_("indicator.png", 0, 0, 16, 16) { random_triangle(); }
 
@@ -27,7 +29,7 @@ class ExampleScreen : public Screen {
       p3_ = { rx(rng), ry(rng) };
     }
 
-    bool update(const Input& input, Audio& audio, unsigned int) override {
+    bool update(const Input& input, Audio& audio, unsigned int elapsed) override {
       buttons_[0] = input.key_held(Input::Button::Up);
       buttons_[1] = input.key_held(Input::Button::Left);
       buttons_[2] = input.key_held(Input::Button::Right);
@@ -49,6 +51,8 @@ class ExampleScreen : public Screen {
       if (input.key_pressed(Input::Button::A)) audio.play_sample("noise1.wav");
 
       if (input.any_pressed()) random_triangle();
+
+      timer_ += elapsed;
 
       return true;
     }
@@ -93,6 +97,13 @@ class ExampleScreen : public Screen {
 
       graphics.draw_triangle({144, 224}, {168, 208}, {152, 192}, c1, true);
       graphics.draw_triangle({144, 224}, {168, 208}, {152, 192}, c2, false);
+
+      coin_.draw(graphics, (timer_ / 125) % 4, 8, 8);
+      coin_.draw_flip(graphics, (timer_ / 125) % 4, 24,  8,  true, false);
+      coin_.draw_flip(graphics, (timer_ / 125) % 4,  8, 24, false,  true);
+      coin_.draw_flip(graphics, (timer_ / 125) % 4, 24, 24,  true,  true);
+
+      coin_.draw_rot(graphics, 0, graphics.width() - 24, 8, (timer_ * 360 / 1000.0f), 8, 8);
     }
 
     Screen* next_screen() const override {
@@ -103,8 +114,10 @@ class ExampleScreen : public Screen {
 
     Text text_;
     Box box_;
+    SpriteMap coin_;
     Sprite controller_, indicator_;
     bool buttons_[8];
+    int timer_;
     Graphics::Point p1_, p2_, p3_;
 };
 

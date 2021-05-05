@@ -12,6 +12,7 @@ cc_binary(
         "//:game",
         "//:screen",
         "//:sprite",
+        "//:spritemap",
         "//:text",
     ],
 )
