@@ -27,6 +27,7 @@ class Graphics {
     Graphics(const Config& config);
     ~Graphics();
 
+    void blit(const std::string& file);
     void blit(const std::string& file, const Rect source, const Rect dest);
     void blit_flip(const std::string& file, const Rect source, const Rect dest, bool hflip, bool vflip);
     void blit_rot(const std::string& file, const Rect source, const Rect dest, const float angle, const Point center);
