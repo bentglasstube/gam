@@ -3,16 +3,6 @@
 #include <cassert>
 #include <algorithm>
 
-Packet::Packet(const std::string& s) {
-  length = s.length();
-  memcpy(data, s.c_str(), length);
-}
-
-Packet::Packet(const char* s) {
-  length = strlen(s);
-  memcpy(data, s, length);
-}
-
 bool Socket::open(const std::string& hostname, uint16_t port) {
   assert(socket_ == NULL);
 
@@ -46,16 +36,20 @@ Socket Socket::accept() {
   return Socket(SDLNet_TCP_Accept(socket_));
 }
 
-void Socket::send(Packet p) {
+void Socket::send(const std::string& p) {
   assert(socket_ != NULL);
-  SDLNet_TCP_Send(socket_, p.data, p.length);
+  SDLNet_TCP_Send(socket_, p.c_str(), p.length());
 }
 
-Packet Socket::receive() {
+const std::string Socket::receive() {
   assert(socket_ != NULL);
-  Packet p;
-  p.length = SDLNet_TCP_Recv(socket_, p.data, Packet::kMaxPacketSize);
-  return p;
+  char data[1500];
+  int length = SDLNet_TCP_Recv(socket_, data, 1500);
+  if (length > 0) {
+    return std::string(reinterpret_cast<const char *>(data));
+  } else {
+    return "";
+  }
 }
 
 bool Socket::ready() const {

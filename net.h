@@ -5,18 +5,6 @@
 #include <string>
 #include <vector>
 
-struct Packet {
-  static constexpr size_t kMaxPacketSize = 1500;
-
-  Packet() = default;
-  Packet(const std::string& s);
-  Packet(const char* s);
-
-  uint8_t data[kMaxPacketSize];
-  size_t length;
-
-};
-
 class Socket {
   public:
 
@@ -30,8 +18,8 @@ class Socket {
     void close();
 
     Socket accept();
-    void send(Packet p);
-    Packet receive();
+    void send(const std::string& p);
+    const std::string receive();
 
     operator bool() const { return socket_ != NULL; }
     bool ready() const;

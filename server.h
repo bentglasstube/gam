@@ -13,8 +13,8 @@ class Server {
 
     virtual void connect(Socket&) {}
     virtual void disconnect(Socket&) {}
-    virtual void receive(Socket&, const Packet&) = 0;
-    virtual void update(unsigned int elapsed) = 0;
+    virtual void receive(Socket&, const std::string&) = 0;
+    virtual void update(unsigned int) {};
     virtual void shutdown() {}
 
   private:

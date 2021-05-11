@@ -61,9 +61,9 @@ void Server::poll(uint32_t timeout) {
     if (client == server_) continue;
 
     if (client.ready()) {
-      const Packet p = client.receive();
+      const std::string p = client.receive();
 
-      if (p.length == 0) {
+      if (p.length() == 0) {
         disconnect(client);
         set_.remove(client);
       } else {
