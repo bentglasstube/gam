@@ -88,22 +88,3 @@ class SocketSet {
     std::vector<Socket> sockets_;
 
 };
-
-class Server {
-  public:
-
-    Server(uint16_t port);
-    virtual ~Server();
-
-    void poll(uint32_t timeout=0);
-    virtual void connect(Socket&) {}
-    virtual void disconnect(Socket&) {}
-    virtual void receive(Socket&, const Packet&) = 0;
-
-  private:
-
-    static constexpr size_t kMaxSockets = 128;
-
-    Socket server_;
-    SocketSet set_;
-};

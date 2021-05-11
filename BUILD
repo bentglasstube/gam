@@ -90,6 +90,13 @@ cc_library(
 )
 
 cc_library(
+    name = "rect",
+    srcs = ["rect.cc"],
+    hdrs = ["rect.h"],
+    deps = [":graphics"],
+)
+
+cc_library(
     name = "screen",
     srcs = ["screen.cc"],
     hdrs = ["screen.h"],
@@ -98,6 +105,13 @@ cc_library(
         ":graphics",
         ":input",
     ],
+)
+
+cc_library(
+    name = "server",
+    srcs = ["server.cc"],
+    hdrs = ["server.h"],
+    deps = [":net"],
 )
 
 cc_library(
@@ -125,11 +139,4 @@ cc_library(
     name = "util",
     srcs = ["util.cc"],
     hdrs = ["util.h"],
-)
-
-cc_library(
-    name = "rect",
-    srcs = ["rect.cc"],
-    hdrs = ["rect.h"],
-    deps = [":graphics"],
 )
