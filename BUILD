@@ -4,7 +4,10 @@ cc_library(
     name = "audio",
     srcs = ["audio.cc"],
     hdrs = ["audio.h"],
-    linkopts = ["-lSDL2_mixer"],
+    linkopts = [
+        "-lSDL2",
+        "-lSDL2_mixer",
+    ],
 )
 
 cc_library(
@@ -31,6 +34,7 @@ cc_library(
         ":input",
         ":screen",
     ],
+    linkopts = ["-lSDL2"],
 )
 
 cc_library(
@@ -65,7 +69,10 @@ cc_library(
     name = "net",
     srcs = ["net.cc"],
     hdrs = ["net.h"],
-    linkopts = ["-lSDL2_net"],
+    linkopts = [
+        "-lSDL2",
+        "-lSDL2_net",
+    ],
 )
 
 cc_library(
