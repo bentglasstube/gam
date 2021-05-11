@@ -62,6 +62,13 @@ cc_library(
 )
 
 cc_library(
+    name = "net",
+    srcs = ["net.cc"],
+    hdrs = ["net.h"],
+    linkopts = ["-lSDL2_net"],
+)
+
+cc_library(
     name = "parallax_backdrop",
     srcs = ["parallax_backdrop.cc"],
     hdrs = ["parallax_backdrop.h"],
