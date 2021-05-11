@@ -25,6 +25,9 @@ class Socket {
     bool ready() const;
 
   private:
+
+    static constexpr int kChunkSize = 1024;
+
     TCPsocket socket_;
 
     Socket(TCPsocket socket) : socket_(socket) {}

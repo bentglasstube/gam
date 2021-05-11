@@ -1,11 +1,10 @@
 #include "net.h"
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
+#include <sstream>
 
 bool Socket::open(const std::string& hostname, uint16_t port) {
-  assert(socket_ == NULL);
-
   IPaddress ip;
   if (SDLNet_ResolveHost(&ip, hostname.c_str(), port) == -1) return false;
   socket_ = SDLNet_TCP_Open(&ip);
@@ -14,7 +13,7 @@ bool Socket::open(const std::string& hostname, uint16_t port) {
 }
 
 bool Socket::open(uint16_t port) {
-  assert(socket_ == NULL);
+  close();
 
   IPaddress ip;
   if (SDLNet_ResolveHost(&ip, NULL, port) == -1) return false;
@@ -25,8 +24,6 @@ bool Socket::open(uint16_t port) {
 
 
 void Socket::close() {
-  assert(socket_ != NULL);
-
   SDLNet_TCP_Close(socket_);
   socket_ = NULL;
 }
@@ -43,17 +40,18 @@ void Socket::send(const std::string& p) {
 
 const std::string Socket::receive() {
   assert(socket_ != NULL);
-  char data[1500];
-  int length = SDLNet_TCP_Recv(socket_, data, 1500);
-  if (length > 0) {
-    return std::string(reinterpret_cast<const char *>(data));
-  } else {
-    return "";
+
+  std::ostringstream buffer;
+  char data[kChunkSize];
+
+  while (true) {
+    int length = SDLNet_TCP_Recv(socket_, data, kChunkSize);
+    if (length > 0) buffer << std::string(data, length);
+    if (length < kChunkSize) return buffer.str();
   }
 }
 
 bool Socket::ready() const {
-  assert(socket_ != NULL);
   return SDLNet_SocketReady(socket_) != 0;
 }
 
