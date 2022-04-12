@@ -85,5 +85,7 @@ void Game::set_screen(Screen* screen) {
       music_track_ = track;
       audio_->play_music(track, true);
     }
+
+    screen_->loader(static_cast<Graphics&>(*graphics_));
   }
 }

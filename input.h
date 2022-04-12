@@ -34,6 +34,7 @@ class Input {
     std::vector<Button> all_pressed() const;
 
     bool editing() const;
+    bool resized() const { return resized_; }
     std::string get_string() const;
 
     void bind_key(SDL_Scancode scancode, Button button);
@@ -53,7 +54,7 @@ class Input {
     typedef std::unordered_set<Button, Util::CastHash<Button>> ButtonSet;
 
     ButtonSet held_, pressed_, released_;
-    bool editing_, gamepad_;
+    bool editing_, gamepad_, resized_;
     std::string string_;
     int axis_prev_[kMaxAxes];
     std::unordered_map<int, Button> keybinds_, padbinds_;

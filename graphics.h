@@ -1,8 +1,12 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_opengl_glext.h>
+
 #include <string>
-#include <map>
+#include <unordered_map>
+#include <vector>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288
@@ -12,8 +16,8 @@ class Graphics {
   public:
 
     struct Config {
-      Config() : fullscreen(true), opengl(true), vsync(true), intscale(true), scale(1) {}
-      bool fullscreen, opengl, vsync, intscale;
+      Config() : fullscreen(true), vsync(true), intscale(true), scale(1) {}
+      bool fullscreen, vsync, intscale;
       int scale;
       std::string title;
       int width, height;
@@ -44,20 +48,21 @@ class Graphics {
 
     int width() const { return config_.width; }
     int height() const { return config_.height; }
+    int scaled_width() const { return config_.width * config_.scale; }
+    int scaled_height() const { return config_.height * config_.scale; }
 
     SDL_Texture* load_image(const std::string& file);
 
   private:
 
-    typedef std::map<std::string, SDL_Texture*> TextureMap;
-
     Config config_;
-    TextureMap textures_;
+    std::unordered_map<std::string, SDL_Texture*> textures_;
     SDL_Window* window_;
     SDL_Renderer* renderer_;
 
-    void set_color(int color);
+    void set_color(uint32_t color);
     void set_window_size();
-    void draw_triangle_top(Point p1, Point p2, Point p3, Color color);
-    void draw_triangle_bottom(Point p1, Point p2, Point p3, Color color);
+    void draw_triangle_top(Point p1, Point p2, Point p3);
+    void draw_triangle_bottom(Point p1, Point p2, Point p3);
+    void draw_line_prim(Point p1, Point p2);
 };

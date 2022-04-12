@@ -16,6 +16,7 @@ void Input::init() {
 bool Input::process() {
   SDL_Event event;
 
+  resized_ = false;
   pressed_.clear();
   released_.clear();
 
@@ -53,6 +54,12 @@ bool Input::process() {
       case SDL_CONTROLLERDEVICEADDED:
       case SDL_CONTROLLERDEVICEREMOVED:
         process_controllers();
+        break;
+
+      case SDL_WINDOWEVENT:
+        if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+          resized_ = true;
+        }
         break;
 
       case SDL_QUIT:
