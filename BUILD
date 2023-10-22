@@ -54,11 +54,35 @@ cc_library(
     ],
 )
 
+genrule(
+    name = "generate_controllerdb",
+    cmd = "./$(location :controllerdb_generator) $(location @gamecontrollerdb//:database) /tmp/abcd > $@",
+    outs = ["controllerdb.cc"],
+    tools = [":controllerdb_generator"],
+    srcs = ["@gamecontrollerdb//:database"],
+)
+
+cc_binary(
+    name = "controllerdb_generator",
+    srcs = ["generate_controllerdb.cc"],
+    data = ["@gamecontrollerdb//:database"],
+)
+
+cc_library(
+    name = "controllerdb",
+    srcs = [":generate_controllerdb"],
+    hdrs = ["controllerdb.h"],
+    linkopts = ["-lSDL2"],
+)
+
 cc_library(
     name = "input",
     srcs = ["input.cc"],
     hdrs = ["input.h"],
-    deps = [":util"],
+    deps = [
+        ":controllerdb",
+        ":util",
+    ],
     linkopts = ["-lSDL2"],
 )
 
