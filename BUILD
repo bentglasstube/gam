@@ -56,7 +56,7 @@ cc_library(
 
 genrule(
     name = "generate_controllerdb",
-    cmd = "./$(location :controllerdb_generator) $(location @gamecontrollerdb//:database) /tmp/abcd > $@",
+    cmd = "./$(location :controllerdb_generator) $(location @gamecontrollerdb//:database) > $@",
     outs = ["controllerdb.cc"],
     tools = [":controllerdb_generator"],
     srcs = ["@gamecontrollerdb//:database"],
