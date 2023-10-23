@@ -3,3 +3,5 @@ bazel-*
 libgam.a
 libgam.so
 libgam-v*
+controllerdb.cc
+generate_controllerdb
