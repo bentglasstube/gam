@@ -1,30 +1,9 @@
-SOURCES=$(filter-out generate_controllerdb.cc, $(wildcard *.cc)) controllerdb.cc
-HEADERS=$(wildcard *.h)
-OBJECTS=$(patsubst %.cc,%.o,$(SOURCES))
-LIBRARY=libgam
-SNAME=$(LIBRARY).a
-DNAME=$(LIBRARY).so
-VERSION=$(shell git describe)
-
 CC=g++
 CFLAGS=-O3 --std=c++11 -Wall -Wextra -Werror -pedantic -fPIC
 
-all: $(SNAME) $(DNAME)
-
-package: $(LIBRARY)-$(VERSION).tgz
-
-$(LIBRARY)-$(VERSION).tgz: $(SNAME) $(DNAME) $(HEADERS)
-	mkdir -p $(LIBRARY)-$(VERSION)/{lib,include}
-	cp $(HEADERS) $(LIBRARY)-$(VERSION)/include/
-	cp $(SNAME) $(DNAME) $(LIBRARY)-$(VERSION)/lib
-	tar zcvf $@ $(LIBRARY)-$(VERSION)
-
-$(SNAME): $(OBJECTS)
-	$(AR) $(ARFLAGS) $@ $^
-
-$(DNAME): LDFLAGS += -shared
-$(DNAME): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(LDLIBS) -o $@ $^
+# default target which is the minimum required things
+all: game.o
+.PHONY: all
 
 generate_controllerdb: generate_controllerdb.cc
 	$(CC) $(CFLAGS) -o $@ $<
@@ -56,10 +35,5 @@ text.o: text.cc text.h graphics.o
 util.o: util.cc util.h
 
 clean:
-	$(RM) controllerdb.cc generate_controllerdb $(OBJECTS)
-
-dist-clean:
-	$(RM) $(SNAME) $(DNAME) $(LIBRARY)-v*.tgz
-	$(RM) -rf $(LIBRARY)-v*/
-
-.PHONY: all clean dist-clean
+	$(RM) controllerdb.cc generate_controllerdb *.o
+.PHONY: clean
